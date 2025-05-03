@@ -45,9 +45,16 @@
                             <div id="registrationModal" class="modal">
                             <div class="modal-content">
                             <span class="close" onclick="closeModal('registrationModal')">&times;</span>
-                                <h2>Register</h2>
+                                <h2>Create a new account</h2>
+                                <hr>
                                 <form>
-                                <label for="fullname">Full Name</label>
+                                <label for="fname">First Name</label>
+                                <input type="text" id="fullname" name="fullname" required style="width: 200px;">
+                                
+                                <label for="lname">Last Name</label>
+                                <input type="text" id="fullname" name="fullname" required>
+
+                                <label for="username">Username</label>
                                 <input type="text" id="fullname" name="fullname" required>
 
                                 <label for="email">Email</label>
