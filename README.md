@@ -1,1 +1,1 @@
-# inventorysys
+# inventory-system
