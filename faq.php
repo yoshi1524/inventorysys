@@ -16,10 +16,10 @@
             <span>iNVAX</span>
         </div>
         <ul class="nav-links">
-            <li><a href="landing.html"><img src="assets/building.png" alt="Home" title="Home"></a></li>
-                    <li><a href="about.html"><img src="assets/think.png" alt="About Us" title="About Us"></a></li>
-                    <li><a href="work.html"><img src="assets/info.png" alt="How It Works" title="How It Works"></a></li>
-                    <li><a href="faq.html"><img src="assets/faq.png" alt="FAQs" title=" FAQs"></a></li>
+            <li><a href="landing.php"><img src="assets/building.png" alt="Home" title="Home"></a></li>
+                    <li><a href="about.php"><img src="assets/think.png" alt="About Us" title="About Us"></a></li>
+                    <li><a href="work.php"><img src="assets/info.png" alt="How It Works" title="How It Works"></a></li>
+                    <li><a href="faq.php"><img src="assets/faq.png" alt="FAQs" title=" FAQs"></a></li>
         </ul>
     </nav>
 
@@ -31,35 +31,28 @@
             <div class="faq-item">
                 <button class="faq-question">What is Invax? <span>+</span></button>
                 <div class="faq-answer">
-                    <p>Invax is an AI-powered inventory management system designed for restaurants to track stock levels, reduce waste, and optimize operations.</p>
+                    <p>Invax is an inventory management system designed for restaurants to track stock levels, reduce waste, and optimize operations.</p>
                 </div>
             </div>
 
             <div class="faq-item">
                 <button class="faq-question">How does Invax help restaurants? <span>+</span></button>
                 <div class="faq-answer">
-                    <p>Invax automates inventory tracking, provides real-time analytics, and offers AI-powered suggestions to reduce costs and improve efficiency.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question">Can I access Invax on mobile? <span>+</span></button>
-                <div class="faq-answer">
-                    <p>Yes! Invax is fully responsive and accessible from desktops, tablets, and smartphones.</p>
+                    <p>Invax automates inventory tracking, provides real-time analytics, and offers suggestions to reduce costs and improve efficiency.</p>
                 </div>
             </div>
 
             <div class="faq-item">
                 <button class="faq-question">Does Invax integrate with other software? <span>+</span></button>
                 <div class="faq-answer">
-                    <p>Yes, Invax integrates with popular POS systems and accounting software for seamless operations.</p>
+                    <p>No, Invax is a stand-alone system that does not integrate with popular POS systems and accounting software for seamless operations.</p>
                 </div>
             </div>
 
             <div class="faq-item">
-                <button class="faq-question">How much does it cost? <span>+</span></button>
+                <button class="faq-question">Does it promote Data Integrity and Security Features? <span>+</span></button>
                 <div class="faq-answer">
-                    <p>Invax offers flexible pricing plans based on your restaurant size. Visit our Pricing page for details.</p>
+                <p>Yes, iNVAX implements user access controls, audit logs, and secure authentication to ensure data integrity and protect sensitive restaurant information.</p>
                 </div>
             </div>
 

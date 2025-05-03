@@ -16,10 +16,10 @@
             <span>iNVAX</span>
         </div>
         <ul class="nav-links">
-            <li><a href="landing.html"><img src="assets/building.png" alt="Home" title="Home"></a></li>
-                    <li><a href="about.html"><img src="assets/think.png" alt="About Us" title="About Us"></a></li>
-                    <li><a href="work.html"><img src="assets/info.png" alt="How It Works" title="How It Works"></a></li>
-                    <li><a href="faq.html"><img src="assets/faq.png" alt="FAQs" title=" FAQs"></a></li>
+            <li><a href="landing.php"><img src="assets/building.png" alt="Home" title="Home"></a></li>
+                    <li><a href="about.php"><img src="assets/think.png" alt="About Us" title="About Us"></a></li>
+                    <li><a href="work.php"><img src="assets/info.png" alt="How It Works" title="How It Works"></a></li>
+                    <li><a href="faq.php"><img src="assets/faq.png" alt="FAQs" title=" FAQs"></a></li>
         </ul>
     </nav>
 

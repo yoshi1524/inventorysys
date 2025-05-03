@@ -33,10 +33,10 @@
                                 <h2>Login</h2>
                                 <form>
                                 <label for="login-email">Email</label>
-                                <input type="email" id="login-email" name="login-email" required>
+                                <input type="email" id="login-email" name="login-email" required style="width: 400px;">
 
                                 <label for="login-password">Password</label>
-                                <input type="password" id="login-password" name="login-password" required>
+                                <input type="password" id="login-password" name="login-password" required style="width: 400px;">
 
                                 <button type="submit">Login</button>
                                 </form>
