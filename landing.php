@@ -18,14 +18,49 @@
             <h2>iNVAX</h2>
         </div>
                 <ul class="nav-links">
-                    <li><a href="landing.html"><img src="assets/building.png" alt="Home" title="Home"></a></li>
-                    <li><a href="about.html"><img src="assets/think.png" alt="About Us" title="About Us"></a></li>
-                    <li><a href="work.html"><img src="assets/info.png" alt="How It Works" title="How It Works"></a></li>
-                    <li><a href="faq.html"><img src="assets/faq.png" alt="FAQs" title=" FAQs"></li>
-                    <li><a href="login.php"><button class="login-btn"> Login</button></a></li>
-                    <li><a href="reg.php"><button class="Signup-btnn"> Signup</button></a></li>
+                    <li><a href="landing.php"><img src="assets/building.png" alt="Home" title="Home"></a></li>
+                    <li><a href="about.php"><img src="assets/think.png" alt="About Us" title="About Us"></a></li>
+                    <li><a href="work.php"><img src="assets/info.png" alt="How It Works" title="How It Works"></a></li>
+                    <li><a href="faq.php"><img src="assets/faq.png" alt="FAQs" title=" FAQs"></a></li>
+                    <li><button onclick="openModal('loginModal')" class="login-btn">Login</button></li>
+                    <li><button onclick="openModal('registrationModal')" class="login-btn">Add Account</button></li>
+
                 </ul>
     </nav>
+                        <div id="loginModal" class="modal">
+                            <div class="modal-content">
+                            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+                                <h2>Login</h2>
+                                <form>
+                                <label for="login-email">Email</label>
+                                <input type="email" id="login-email" name="login-email" required>
+
+                                <label for="login-password">Password</label>
+                                <input type="password" id="login-password" name="login-password" required>
+
+                                <button type="submit">Login</button>
+                                </form>
+                            </div>
+                        </div>
+                            <div id="registrationModal" class="modal">
+                            <div class="modal-content">
+                            <span class="close" onclick="closeModal('registrationModal')">&times;</span>
+                                <h2>Register</h2>
+                                <form>
+                                <label for="fullname">Full Name</label>
+                                <input type="text" id="fullname" name="fullname" required>
+
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+
+                                <label for="password">Password</label>
+                                <input type="password" id="password" name="password" required>
+
+                                <button type="submit">Sign Up</button>
+                                </form>
+                            </div>
+                        </div>
+
 <!--tech logo-->
     <section class="huhu">
         <div class="content-g">
@@ -41,7 +76,6 @@
     <!--footer-->
     <footer class="footer">
         <div class="footer-content">
-            <footer>
                 <p>&copy; 2025 iNVAX. All Rights Reserved.</p>
             <ul class="footer-links">
                 <li><a href="#" onclick="openModal('privacyModal')">Privacy Policy</a></li>
@@ -214,7 +248,26 @@ Users will be notified of significant changes.
             }
         });
     };
-    </script>
+    function openModal(id) {
+  document.getElementById(id).style.display = "block";
+}
+
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+// Optional: Close modal when clicking outside of it
+window.onclick = function(event) {
+  const loginModal = document.getElementById("loginModal");
+  const registrationModal = document.getElementById("registrationModal");
+
+  if (event.target === loginModal) {
+    loginModal.style.display = "none";
+  } else if (event.target === registrationModal) {
+    registrationModal.style.display = "none";
+  }
+};
+</script>
     
 </body>
 </html>
