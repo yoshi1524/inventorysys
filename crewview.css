@@ -1,0 +1,12 @@
+.crew-view {
+    margin-top: 2rem;
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  
+  .crew-details p {
+    margin: 0.5rem 0;
+  }
