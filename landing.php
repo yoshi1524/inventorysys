@@ -2,7 +2,7 @@
 session_start();
 require 'db.php';
 
-$stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE user_level_id = '4'");
+$stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE user_level = '4'");
 $superadminExists = $stmt->fetchColumn() > 0;
 ?>
 <!DOCTYPE html>
@@ -170,7 +170,7 @@ $superadminExists = $stmt->fetchColumn() > 0;
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['user_level_id'] = $user['user_level_id'];
 
             // Redirect based on user level
@@ -183,12 +183,16 @@ $superadminExists = $stmt->fetchColumn() > 0;
                     echo "Invalid user level.";
             }
         } else {
-            echo "Invalid login.";
+            $loginError = "Invalid email or password.";
         }
     } else {
         echo "Both fields are required.";
     }}
 ?>
+    <?php if (isset($loginError)): ?>
+    <p style="color: red;"><?= $loginError ?></p>
+    <?php endif; ?>
+
         <div id="loginModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeModal('loginModal')">&times;</span>
