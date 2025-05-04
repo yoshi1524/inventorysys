@@ -1,3 +1,10 @@
+<?php
+session_start();
+require 'db.php';
+
+$stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE user_level_id = '4'");
+$superadminExists = $stmt->fetchColumn() > 0;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,9 +16,127 @@
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="assets/Untitled__1_-removebg-preview.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
-
+    <style>
+    .modal1 {
+      display: <?= $superadminExists ? 'none' : 'block' ?>;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      background: white;
+      padding: 50px;
+      border: 1px solid black;
+    }
+    .notification {
+      background-color: #dff0d8;
+      color: #3c763d;
+      border: 1px solid #d6e9c6;
+      padding: 10px;
+      margin: 10px 0;
+      width: fit-content;
+    }
+  </style>
 </head>
 <body>
+    <!--superadminmodal-->
+    <?php 
+        //DATABASE CONNECTION
+        include('db.php');
+        //NOTIFICATION
+            $notif = '💬';
+            //CHECK IF THE USER CLICKED THE BUTTON
+                if(isset($_POST['btnRegister'])){
+
+                    //CHECK IF ALL THE ELEMENTS HAVE BEEN FILLED UP
+                    if(!empty($_POST['lastName']) AND !empty($_POST['firstName'])AND !empty($_POST['username']) AND !empty($_POST['email'])
+                    AND !empty($_POST['password']) AND !empty($_POST['confirmPassword'])){
+                        //CHECK FOR THE SPECIAL CHARACTERS
+                        if(!preg_match('/[\'^$&{}<>;=!]/',$_POST['username'])){
+                            //DECLARE THE USER'S INPUT AS VARIABLES
+                            $inputFirstName = $_POST['firstName'];
+                            $inputLastName = $_POST['lastName'];
+                            $inputEmail = $_POST['email'];
+                            $inputUsername = $_POST['username'];
+                            $inputPassword = $_POST['password'];
+                            $inputConfirmPassword = $_POST['confirmPassword'];
+                
+                            //CHECK IF THE USERNAME EXIST IN DATABASE
+                            $checkUsername = mysqli_query($conn, "SELECT Username FROM users WHERE Username = '$inputUsername'");
+                            $numberOfUser = mysqli_num_rows($checkUsername);
+                
+                            if($numberOfUser < 1){
+                            //CHECK IF THE EMAIL ADDRESS EXIST IN DATABASE
+                                $checkEmail = mysqli_query($conn, "SELECT Email FROM users WHERE Email = '$inputEmail'");
+                                $numberOfEmail = mysqli_num_rows($checkEmail);
+                
+                                if($numberOfEmail < 1){
+                                    //CHECK FOR THE PASSWORD CHARACTERS, MIN OF 8 CHARACTERS
+                                    if(strlen($inputPassword)>= 8){
+                                        //CHECK IF PASSWORDS AND CONFIRM PASSWORD ARE THE SAME
+                                        if($inputPassword == $inputConfirmPassword){
+                                            //HASH OR ENCRYPT THE PASSWORD//
+                                            $hashPassword = password_hash($inputPassword, PASSWORD_BCRYPT, array('cost'=>12));
+                                            
+                
+                                            //SAVE THE RECORDS IN THE DATABASE
+                                            //PREPARED STATEMENT
+                                            //PREPARED QUERY
+                
+                                            $saveRecord = $conn->prepare ("INSERT INTO `users`( `fname`, `lname`, `Username`, `Email`, `Password`) 
+                                            VALUES (?,?,?,?,?)");
+                
+                                            //BIND PARAMETERS
+                                            $saveRecord->bind_param("sssss",$inputFirstName,$inputLastName,$inputUsername,$inputEmail,$hashPassword);
+                
+                                            //CHECK FOR BIND ERRORS
+                                            if($saveRecord->errno){
+                                                $notif = 'The record has not been saved in database';
+                                            }
+                                            else{
+                                                $notif = 'Record has been saved.';
+                                                $saveRecord->execute();
+                                                $saveRecord->close();
+                                               $conn->close();
+                                            }
+                                        }
+                                        else{
+                                            $notif = 'Password should match with the Confirm Password.';
+                                        }
+                                    }
+                                    else{
+                                        $notif = 'Password should be at least 8 characters long. Please try again :(';
+                                    }
+                                }
+                                else{
+                                    $notif = 'Email address is already exist. Please try again :(';
+                                }
+                            }
+                            else{
+                                $notif = 'Username is already exist. Please try again :(';
+                            }
+                        }
+                        else{
+                            $notif = 'No special characters for username is allowed. Please try again :(';
+                        }
+                    }
+                    else{
+                        $notif = 'All fields are required to filled up. Please try again :(';
+                    }
+
+                }
+
+?>
+<div class="modal1">
+  <h2>Create Superadmin</h2>
+    <form action="cresupad.php" method="POST" autocomplete="off">
+    <input type="text" name="firstname" placeholder="First Name" required><br>
+    <input type="text" name="lastname" placeholder="Last Name" required><br>
+    <input type="text" name="email" placeholder="Email" required><br>
+    <input type="text" name="username" placeholder="Username" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+    <input type="password" name="confirmPassword" placeholder="Confirm Password" required><br>
+    <button type="submit">Register Superadmin</button>
+  </form>
+</div>
     <nav class="navbar">
         <div class="logo">
             <img src="assets/Untitled__1_-removebg-preview.png" alt="BGMC">
@@ -23,50 +148,62 @@
                     <li><a href="work.php"><img src="assets/info.png" alt="How It Works" title="How It Works"></a></li>
                     <li><a href="faq.php"><img src="assets/faq.png" alt="FAQs" title=" FAQs"></a></li>
                     <li><button onclick="openModal('loginModal')" class="login-btn">Login</button></li>
-                    <li><button onclick="openModal('registrationModal')" class="login-btn">Add Account</button></li>
-
                 </ul>
     </nav>
-                        <div id="loginModal" class="modal">
-                            <div class="modal-content">
-                            <span class="close" onclick="closeModal('loginModal')">&times;</span>
-                                <h2>Login</h2>
-                                <form>
-                                <label for="login-email">Email</label>
-                                <input type="email" id="login-email" name="login-email" required style="width: 400px;">
+<!---notificaion-->
+                <?php if ($superadminExists): ?>
+                    <div class="notification">✅ A Superadmin is already registered in the system. Please Login SuperAdmin!</div>
+                <?php endif; ?>
 
-                                <label for="login-password">Password</label>
-                                <input type="password" id="login-password" name="login-password" required style="width: 400px;">
+                <?php if (!$superadminExists): ?>
+                    <div class="notification">⚠️ No Superadmin is registered in the system. Please register a Superadmin!</div>
+                <?php endif; ?>
+<!-- Login Modal-->
+ <?php
+ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['login-email'] ?? null;
+    $password = $_POST['login-password'] ?? null;
 
-                                <button type="submit">Login</button>
-                                </form>
-                            </div>
-                        </div>
-                            <div id="registrationModal" class="modal">
-                            <div class="modal-content">
-                            <span class="close" onclick="closeModal('registrationModal')">&times;</span>
-                                <h2>Create a new account</h2>
-                                <hr>
-                                <form>
-                                <label for="fname">First Name</label>
-                                <input type="text" id="fullname" name="fullname" required style="width: 200px;">
-                                
-                                <label for="lname">Last Name</label>
-                                <input type="text" id="fullname" name="fullname" required>
+    if ($username && $password) {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->execute([$username]);
+        $user = $stmt->fetch();
 
-                                <label for="username">Username</label>
-                                <input type="text" id="fullname" name="fullname" required>
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_level_id'] = $user['user_level_id'];
 
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email" required>
+            // Redirect based on user level
+            switch ($user['user_level_id']) {
+                case 1: header("Location: supad.php"); break;
+                case 2: header("Location: owndash.php"); break;
+                case 3: header("Location: mandash.php"); break;
+                case 4: header("Location: crewdash.php"); break;        
+                default:
+                    echo "Invalid user level.";
+            }
+        } else {
+            echo "Invalid login.";
+        }
+    } else {
+        echo "Both fields are required.";
+    }}
+?>
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('loginModal')">&times;</span>
+                    <h2>Login</h2>
+                        <form action="supad.php" method="POST">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" name="login-email" required style="width: 400px;">
 
-                                <label for="password">Password</label>
-                                <input type="password" id="password" name="password" required>
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" name="login-password" required style="width: 400px;">
 
-                                <button type="submit">Sign Up</button>
-                                </form>
-                            </div>
-                        </div>
+                        <button type="submit">Login</button>
+                        </form>
+            </div>
+        </div>
 
 <!--tech logo-->
     <section class="huhu">
@@ -80,7 +217,7 @@
             <p>Transform the way you track, manage, and optimize your restaurant's inventory—effortless, efficient, and future-ready</p>
         </div>
     </section>
-    <!--footer-->
+<!--footer-->
     <footer class="footer">
         <div class="footer-content">
                 <p>&copy; 2025 iNVAX. All Rights Reserved.</p>
@@ -92,7 +229,7 @@
         </div>
     </footer>
 
-    <!-- Privacy Policy Modal -->
+<!-- Privacy Policy Modal -->
 <div id="privacyModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('privacyModal')">&times;</span>
