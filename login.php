@@ -1,63 +1,62 @@
 <?php 
+if(($outUsername == $user OR $outEmail == $user) AND password_verify($password, $outPassword)){
+session_start(); 
 
-        //DATABASE CONNECTION
-            include('db.php');
+include('db.php');
 
-        //NOTIFICATION
-            $notif = '💬';
+$notif = '💬';
 
-            //CHECK IF THE USER CLICKED THE BUTTON
-                if(isset($_POST['btnLogin'])){
+if (isset($_POST['btnLogin'])) {
+    $notif = 'The button has been clicked.';
 
-                    $notif='The button has been clicked.';
-                    //USERNAME AND PASSWORD SHOULD BE COMPLETELY FILLED UP
-                    if (!empty($_POST['user']) AND !empty($_POST['password'])){
-                        //CHECK FOR SPECIAL CHARACTERS IN USERNAME
-                        if(!preg_match('/;[\'$<>=&]/', $_POST['user'])){
-                
-                            //user's input from the form
-                            $user = $_POST['user'];
-                            $password = $_POST['password'];
-                
-                            //QUERY FOR username/email and password
-                            $queryUser = mysqli_query($conn, "SELECT * FROM users WHERE (Username = '$user' OR Email  = '$user')");
-                            $numberQuery = mysqli_num_rows($queryUser);
-                
-                            if($numberQuery > 0){
-                               //PULL OUT THE RECORDS IN THE DATABASE
-                               while($row = mysqli_fetch_assoc($queryUser)){
-                                $outUsername = $row['Username'];
-                                $outEmail = $row['Email'];
-                                $outPassword = $row['Password'];
-                               }
-                               if(($outUsername == $user OR $outEmail == $user) AND password_verify($password, $outPassword)){
-                                    $notif = 'Login Successfully';
-                                    //SESSION
-                                    //$_SESSION['username'] = $user;
-                                    //header("Location: ");
-                                    //exit();
-                               }
-                               else{
-                                    $notif = 'Username/Email and Password is incorrect. Please try again :(';
-                               }
-                
-                            }
-                            else{
-                                $notif = 'Record is not yet in our system. Please register an account first :(';
-                            }
-                        }
-                        else{
-                            $notif = 'No special characters allowed. Please try again :(';
-                        }
-                    }
-                    else{
-                        $notif = 'Fields are required to fill up. Please try again :(';
-                    }
-                
+    if (!empty($_POST['user']) && !empty($_POST['password'])) {
+        if (!preg_match('/;[\'$<>=&]/', $_POST['user'])) {
 
+            $user = $_POST['user'];
+            $password = $_POST['password'];
+
+            $queryUser = mysqli_query($conn, "SELECT * FROM users WHERE (Username = '$user' OR Email = '$user')");
+            $numberQuery = mysqli_num_rows($queryUser);
+
+            if ($numberQuery > 0) {
+                while ($row = mysqli_fetch_assoc($queryUser)) {
+                    $outUsername = $row['Username'];
+                    $outEmail = $row['Email'];
+                    $outPassword = $row['Password'];
+
+                    // Store full user data
+                    $userID = $row['user_id'];
+                    $fname = $row['fname'];
+                    $lname = $row['lname'];
+                    $userLevel = $row['user_level'];
                 }
 
+                if (($outUsername == $user || $outEmail == $user) && password_verify($password, $outPassword)) {
+                    // ✅ Store session values
+                    $_SESSION['user_id'] = $userID;
+                    $_SESSION['username'] = $outUsername;
+                    $_SESSION['user_level'] = $userLevel;
+                    $_SESSION['fname'] = $fname;
+                    $_SESSION['lname'] = $lname;
+
+                    // Redirect to dashboard or appropriate location
+                    header("Location: superadmin_dashboard.php");
+                    exit();
+                } else {
+                    $notif = 'Username/Email and Password is incorrect. Please try again :(';
+                }
+            } else {
+                $notif = 'Record is not yet in our system. Please register an account first :(';
+            }
+        } else {
+            $notif = 'No special characters allowed. Please try again :(';
+        }
+    } else {
+        $notif = 'Fields are required to fill up. Please try again :(';
+    }
+}}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

@@ -36,105 +36,17 @@ $superadminExists = $stmt->fetchColumn() > 0;
     }
   </style>
 </head>
-<body>
-    <!--superadminmodal-->
-    <?php 
-        //DATABASE CONNECTION
-        include('db.php');
-        //NOTIFICATION
-            $notif = '💬';
-            //CHECK IF THE USER CLICKED THE BUTTON
-                if(isset($_POST['btnRegister'])){
-
-                    //CHECK IF ALL THE ELEMENTS HAVE BEEN FILLED UP
-                    if(!empty($_POST['lastName']) AND !empty($_POST['firstName'])AND !empty($_POST['username']) AND !empty($_POST['email'])
-                    AND !empty($_POST['password']) AND !empty($_POST['confirmPassword'])){
-                        //CHECK FOR THE SPECIAL CHARACTERS
-                        if(!preg_match('/[\'^$&{}<>;=!]/',$_POST['username'])){
-                            //DECLARE THE USER'S INPUT AS VARIABLES
-                            $inputFirstName = $_POST['firstName'];
-                            $inputLastName = $_POST['lastName'];
-                            $inputEmail = $_POST['email'];
-                            $inputUsername = $_POST['username'];
-                            $inputPassword = $_POST['password'];
-                            $inputConfirmPassword = $_POST['confirmPassword'];
-                
-                            //CHECK IF THE USERNAME EXIST IN DATABASE
-                            $checkUsername = mysqli_query($conn, "SELECT Username FROM users WHERE Username = '$inputUsername'");
-                            $numberOfUser = mysqli_num_rows($checkUsername);
-                
-                            if($numberOfUser < 1){
-                            //CHECK IF THE EMAIL ADDRESS EXIST IN DATABASE
-                                $checkEmail = mysqli_query($conn, "SELECT Email FROM users WHERE Email = '$inputEmail'");
-                                $numberOfEmail = mysqli_num_rows($checkEmail);
-                
-                                if($numberOfEmail < 1){
-                                    //CHECK FOR THE PASSWORD CHARACTERS, MIN OF 8 CHARACTERS
-                                    if(strlen($inputPassword)>= 8){
-                                        //CHECK IF PASSWORDS AND CONFIRM PASSWORD ARE THE SAME
-                                        if($inputPassword == $inputConfirmPassword){
-                                            //HASH OR ENCRYPT THE PASSWORD//
-                                            $hashPassword = password_hash($inputPassword, PASSWORD_BCRYPT, array('cost'=>12));
-                                            
-                
-                                            //SAVE THE RECORDS IN THE DATABASE
-                                            //PREPARED STATEMENT
-                                            //PREPARED QUERY
-                
-                                            $saveRecord = $conn->prepare ("INSERT INTO `users`( `fname`, `lname`, `Username`, `Email`, `Password`) 
-                                            VALUES (?,?,?,?,?)");
-                
-                                            //BIND PARAMETERS
-                                            $saveRecord->bind_param("sssss",$inputFirstName,$inputLastName,$inputUsername,$inputEmail,$hashPassword);
-                
-                                            //CHECK FOR BIND ERRORS
-                                            if($saveRecord->errno){
-                                                $notif = 'The record has not been saved in database';
-                                            }
-                                            else{
-                                                $notif = 'Record has been saved.';
-                                                $saveRecord->execute();
-                                                $saveRecord->close();
-                                               $conn->close();
-                                            }
-                                        }
-                                        else{
-                                            $notif = 'Password should match with the Confirm Password.';
-                                        }
-                                    }
-                                    else{
-                                        $notif = 'Password should be at least 8 characters long. Please try again :(';
-                                    }
-                                }
-                                else{
-                                    $notif = 'Email address is already exist. Please try again :(';
-                                }
-                            }
-                            else{
-                                $notif = 'Username is already exist. Please try again :(';
-                            }
-                        }
-                        else{
-                            $notif = 'No special characters for username is allowed. Please try again :(';
-                        }
-                    }
-                    else{
-                        $notif = 'All fields are required to filled up. Please try again :(';
-                    }
-
-                }
-
-?>
+<body> 
 <div class="modal1">
   <h2>Create Superadmin</h2>
     <form action="cresupad.php" method="POST" autocomplete="off">
-    <input type="text" name="firstname" placeholder="First Name" required><br>
-    <input type="text" name="lastname" placeholder="Last Name" required><br>
+    <input type="text" name="firstName" placeholder="First Name" required><br>
+    <input type="text" name="lastName" placeholder="Last Name" required><br>
     <input type="text" name="email" placeholder="Email" required><br>
     <input type="text" name="username" placeholder="Username" required><br>
     <input type="password" name="password" placeholder="Password" required><br>
     <input type="password" name="confirmPassword" placeholder="Confirm Password" required><br>
-    <button type="submit">Register Superadmin</button>
+    <button type="submit" name="btnRegister">Register Superadmin</button>
   </form>
 </div>
     <nav class="navbar">
@@ -159,40 +71,6 @@ $superadminExists = $stmt->fetchColumn() > 0;
                     <div class="notification">⚠️ No Superadmin is registered in the system. Please register a Superadmin!</div>
                 <?php endif; ?>
 <!-- Login Modal-->
- <?php
- if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['login-email'] ?? null;
-    $password = $_POST['login-password'] ?? null;
-
-    if ($username && $password) {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->execute([$username]);
-        $user = $stmt->fetch();
-
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['user_level_id'] = $user['user_level_id'];
-
-            // Redirect based on user level
-            switch ($user['user_level_id']) {
-                case 1: header("Location: supad.php"); break;
-                case 2: header("Location: owndash.php"); break;
-                case 3: header("Location: mandash.php"); break;
-                case 4: header("Location: crewdash.php"); break;        
-                default:
-                    echo "Invalid user level.";
-            }
-        } else {
-            $loginError = "Invalid email or password.";
-        }
-    } else {
-        echo "Both fields are required.";
-    }}
-?>
-    <?php if (isset($loginError)): ?>
-    <p style="color: red;"><?= $loginError ?></p>
-    <?php endif; ?>
-
         <div id="loginModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeModal('loginModal')">&times;</span>

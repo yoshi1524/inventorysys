@@ -3,9 +3,6 @@
 session_start();
 require 'db.php';
 
-if (!isset($_SESSION['user_level']) || $_SESSION['user_level'] !== 4) {
-    die("Access denied. Superadmin only.");
-}
 
 // Fetch user logs
 $logs = $pdo->query("SELECT * FROM user_logs ORDER BY timestamp DESC")->fetchAll(PDO::FETCH_ASSOC);
@@ -68,9 +65,15 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll(P
 </head>
 <body>
 <div class="sidebar">
-    <h2>Superadmin</h2>
+<p>Logged in as: 
+  <strong>
+    <?= isset($_SESSION['fname']) && isset($_SESSION['lname']) 
+        ? htmlspecialchars($_SESSION['fname'] . ' ' . $_SESSION['lname']) 
+        : '' ?>
+  </strong> (Superadmin)
+</p>
     <a href="#logs">User Logs</a>
-    <a href="#users">Manage Users</a>
+    <a href="adduse.php">Manage Users</a>
     <a href="logout.php">Logout</a>
 </div>
 <div class="content">
@@ -101,13 +104,13 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll(P
         </tr>
         <?php foreach ($users as $user): ?>
         <tr>
-            <td><?= $user['id'] ?></td>
+            <td><?= $user['user_id'] ?></td>
             <td><?= htmlspecialchars($user['username']) ?></td>
             <td><?= htmlspecialchars($user['user_level']) ?></td>
             <td><?= htmlspecialchars($user['created_at']) ?></td>
             <td>
                 <form action="deluser.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
-                    <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+                    <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
                     <button type="submit" class="delete-btn">Delete</button>
                 </form>
             </td>
