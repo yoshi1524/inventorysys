@@ -2,7 +2,8 @@
 session_start();
 require 'db.php';
 
-$stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE user_level = '4'");
+// Check if a superadmin exists
+$stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE user_level_id = 1");
 $superadminExists = $stmt->fetchColumn() > 0;
 ?>
 <!DOCTYPE html>
@@ -26,6 +27,9 @@ $superadminExists = $stmt->fetchColumn() > 0;
       padding: 50px;
       border: 1px solid black;
     }
+    .modal1 h2{
+        color: black;
+    }
     .notification {
       background-color: #dff0d8;
       color: #3c763d;
@@ -45,7 +49,6 @@ $superadminExists = $stmt->fetchColumn() > 0;
     <input type="text" name="email" placeholder="Email" required><br>
     <input type="text" name="username" placeholder="Username" required><br>
     <input type="password" name="password" placeholder="Password" required><br>
-    <input type="password" name="confirmPassword" placeholder="Confirm Password" required><br>
     <button type="submit" name="btnRegister">Register Superadmin</button>
   </form>
 </div>

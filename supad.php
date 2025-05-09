@@ -1,8 +1,12 @@
-<!-- superadmin_dashboard.php -->
 <?php
 session_start();
 require 'db.php';
 
+if (!isset($_SESSION['user_id']) || $_SESSION['user_level_id'] !== 1) {
+    header("Location: login.php");
+    var_dump($user);
+    exit();
+}
 
 // Fetch user logs
 $logs = $pdo->query("SELECT * FROM user_logs ORDER BY timestamp DESC")->fetchAll(PDO::FETCH_ASSOC);
@@ -106,7 +110,7 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll(P
         <tr>
             <td><?= $user['user_id'] ?></td>
             <td><?= htmlspecialchars($user['username']) ?></td>
-            <td><?= htmlspecialchars($user['user_level']) ?></td>
+            <td><?= htmlspecialchars($user['user_level_id']) ?></td>
             <td><?= htmlspecialchars($user['created_at']) ?></td>
             <td>
                 <form action="deluser.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">

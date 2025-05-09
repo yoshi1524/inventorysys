@@ -8,11 +8,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $user_level = $_POST['user_level'];
+    $user_level_id = $_POST['user_level_id'];
 
-    if ($fname && $lname && $username && $email && $user_level) {
-        $stmt = $pdo->prepare("INSERT INTO users (fname, lname, username, email, password, user_level, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->execute([$fname, $lname, $username, $email, $password, $user_level]);
+    if ($fname && $lname && $username && $email && $user_level_id) {
+        $stmt = $pdo->prepare("INSERT INTO users (fname, lname, username, email, password, user_level_id, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$fname, $lname, $username, $email, $password, $user_level_id]);
         $message = "User created successfully!";
     } else {
         $message = "All fields are required.";
@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <input type="text" name="username" placeholder="Username" required>
     <input type="email" name="email" placeholder="Email" required>
     <input type="password" name="password" placeholder="Password" required>
-    <select name="user_level" required>
+    <select name="user_level_id" required>
         <option value="4">Superadmin</option>
         <option value="3">Manager</option>
         <option value="2">Crew</option>
