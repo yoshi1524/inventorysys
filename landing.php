@@ -85,7 +85,7 @@ $superadminExists = $stmt->fetchColumn() > 0;
                         <form action="supad.php" method="POST">
                         <input type="username" placeholder="Username" name="username" style="width: 400px;">
                         <input type="password" placeholder="Password" name="password" required style="width: 400px;">
-                        <a href="forgot-password/forgot-password.php">Forgot Password?</a>
+                        <a href="forgot-password/forgot-password.php">Forgot Password?</a><br><br>
                         <button type="submit">Login</button>
                         </form>
             </div>
