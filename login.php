@@ -30,10 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,9 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    
     <form action='login.php' method='POST'>
-
         <div class= 'wrapper'>
                     <div class= 'form-group'>
                         <input type='text' name='user' placeholder='Username or Email Address'>
@@ -62,10 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <center>
                         <a href="registration.php">New user? Click here to create an account</a>
                     </center>
-
         </div>
-
     </form>
-
 </body>
 </html>

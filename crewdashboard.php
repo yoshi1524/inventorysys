@@ -1,3 +1,44 @@
+<?php
+session_start();
+require 'db.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Get the user from DB
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->execute([$username]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Verify user exists and password matches
+    if ($user && password_verify($password, $user['password'])) {
+        // Set session variables
+        $_SESSION['user_id'] = $user['user_id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['user_level_id'] = $user['user_level_id'];
+        $_SESSION['fname'] = $user['first_name'];
+        $_SESSION['lname'] = $user['last_name'];
+
+        // Check user level and redirect
+        if ($user['user_level_id'] == 1) {
+            header('Location: supad.php');
+        } elseif ($user['user_level_id'] == 2) {
+            header('Location: owndash.php');
+        }elseif($user['user_level_id'] == 3) {
+            header('Location: mandash.php');
+        } elseif ($user['user_level_id'] == 4) {
+            header('Location: crewdashboard.php');
+        } else
+        exit();
+    } else {
+        // Invalid credentials
+        echo "<script>alert('Incorrect username or password.'); window.location.href = 'landing.php';</script>";
+        exit();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

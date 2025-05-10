@@ -30,6 +30,9 @@ $superadminExists = $stmt->fetchColumn() > 0;
     .modal1 h2{
         color: black;
     }
+    .modal-content {
+        color: black;
+    }
     .notification {
       background-color: #dff0d8;
       color: #3c763d;
@@ -78,18 +81,15 @@ $superadminExists = $stmt->fetchColumn() > 0;
             <div class="modal-content">
                 <span class="close" onclick="closeModal('loginModal')">&times;</span>
                     <h2>Login</h2>
+                    <p>Login with your Username and Password</p>
                         <form action="supad.php" method="POST">
-                        <label for="login-email">Email</label>
-                        <input type="email" id="login-email" name="login-email" required style="width: 400px;">
-
-                        <label for="login-password">Password</label>
-                        <input type="password" id="login-password" name="login-password" required style="width: 400px;">
-
+                        <input type="username" placeholder="Username" name="username" style="width: 400px;">
+                        <input type="password" placeholder="Password" name="password" required style="width: 400px;">
+                        <a href="forgot-password/forgot-password.php">Forgot Password?</a>
                         <button type="submit">Login</button>
                         </form>
             </div>
         </div>
-
 <!--tech logo-->
     <section class="huhu">
         <div class="content-g">
@@ -296,6 +296,14 @@ window.onclick = function(event) {
     registrationModal.style.display = "none";
   }
 };
+  setTimeout(() => {
+    const notification = document.querySelector('.notification');
+    if (notification) {
+      notification.style.transition = 'opacity 0.5s ease-out';
+      notification.style.opacity = 0;
+      setTimeout(() => notification.remove(), 500);
+    }
+  }, 3000);
 </script>
     
 </body>
