@@ -101,4 +101,37 @@
   .view-btn:hover {
     background-color: #7a99b9;
   }
-  
+  /* Team Section */
+.team {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.team h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.team-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.team-member {
+  background: black;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 200px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.team-member img {
+  width: 100px;
+  border-radius: 50%;
+}
+
+.team-member h3 {
+  margin: 10px 0 5px;
+}

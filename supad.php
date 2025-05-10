@@ -94,15 +94,33 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll(P
             padding: 5px 10px;
             cursor: pointer;
         }
+        .sidebar img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 50%;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar h3 {
+        color: white;
+        margin-top: 10px;
+        font-size: 18px;
+        }
     </style>
 </head>
 <body>
 <div class="sidebar">
-<p>Logged in as: 
-  <strong>
-    <?= isset($_SESSION['fname']) && isset($_SESSION['lname']) 
-        ? htmlspecialchars($_SESSION['fname'] . ' ' . $_SESSION['lname']) 
-        : '' ?>
+        <!-- Logo & Branding -->
+        <div style="text-align: center; padding: 1rem;">
+        <img src="assets/bgmc-modified.png" alt="Logo">
+        <h3 style="color: white; margin-top: 10px; font-size: 18px;">Superadmin Dashboard</h3>
+    </div>
+<p>Welcome: 
+<strong>
+    <?= isset($_SESSION['username']) 
+        ? htmlspecialchars($_SESSION['username']) 
+        : 'Unknown' ?>
   </strong> (Superadmin)
 </p>
     <a href="#logs">User Logs</a>

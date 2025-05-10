@@ -85,17 +85,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-top: 20px;
             color: green;
         }
+
+        .sidebar img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 50%;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar h3 {
+        color: white;
+        margin-top: 10px;
+        font-size: 18px;
+        }
+
     </style>
 </head>
 <body>
 <div class="sidebar">
-<p>Logged in as: 
-  <strong>
-    <?= isset($_SESSION['fname']) && isset($_SESSION['lname']) 
-        ? htmlspecialchars($_SESSION['fname'] . ' ' . $_SESSION['lname']) 
+    <!-- Logo & Branding -->
+    <div style="text-align: center; padding: 1rem;">
+        <img src="assets/bgmc-modified.png" alt="Logo">
+        <h3 style="color: white; margin-top: 10px; font-size: 18px;">Superadmin Dashboard</h3>
+    </div>
+
+    <p>Welcome: 
+    <strong>
+    <?= isset($_SESSION['username']) 
+        ? htmlspecialchars($_SESSION['username']) 
         : 'Unknown' ?>
   </strong> (Superadmin)
-</p>
+    </p>
     <a href="supad.php">Dashboard</a>
     <a href="logout.php">Logout</a>
 </div>
@@ -108,9 +129,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <input type="email" name="email" placeholder="Email" required>
     <input type="password" name="password" placeholder="Password" required>
     <select name="user_level_id" required>
-        <option value="4">Superadmin</option>
+        <option value="1">Superadmin</option>
+        <option value="2">Owner</option>
         <option value="3">Manager</option>
-        <option value="2">Crew</option>
+        <option value="4">Crew</option>
     </select>
     <button type="submit">Create User</button>
     <?php if (isset($message)): ?>

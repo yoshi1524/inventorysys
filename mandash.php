@@ -9,6 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute([$username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    // Fetch product data
+    $stmt = $pdo->query("SELECT product_name, quantity FROM product");
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
     // Verify user exists and password matches
     if ($user && password_verify($password, $user['password'])) {
         // Set session variables
@@ -36,105 +41,369 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Dashboard</title>
-    <!-- Link to external CSS file -->
-    <link rel="stylesheet" href="dash.css">
-    <!-- Include Chart.js library from CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Boxicons -->
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<!-- My CSS -->
+	<link rel="stylesheet" href="owndashbb.css">
+
+	<title>Manager Hub</title>
+    <style>
+        .box-content {
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.3s ease, opacity 0.3s ease;
+	opacity: 0;
+	padding-left: 1rem;
+}
+
+.collapsible-box.active .box-content {
+	max-height: 200px; /* Adjust as needed */
+	opacity: 1;
+}
+.box-header {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	gap: 10px;
+}
+
+    </style>
 </head>
 <body>
-    <!-- Dashboard Container -->
-    <div class="dashboard">
-        <!-- Navigation Sidebar -->
-        <nav class="sidebar">
-            <h2 class="logo">Dashboard</h2>
-            <ul>
-                <li><a href="#">User</a>
-</li>
 
-                <li><a href="#">Product Monitoring</a></li>
-                <li><a href="#">Reports</a></li>
-                <li><a href="Settings.php">Settings</a></li>
-            </ul>
-        </nav>
 
-        <!-- Main Content Area -->
-        <div class="main-content">
-            <!-- Header Section -->
-            <header>
-                <h1>Welcome, User</h1>
-                <p>Here are your latest stats.</p>
-            </header>
+	<!-- SIDEBAR -->
+	<section id="sidebar">
+		<a href="#" class="brand">
+			<i class='bx bxs-smile'></i>
+			<span>Welcome 
+<strong>
+    <?= isset($_SESSION['username']) 
+        ? htmlspecialchars($_SESSION['username']) 
+        : 'Unknown' ?>
+  </strong>
+  </span>
+		</a>
+		<ul class="side-menu top">
+			<li class="active">
+				<a href="#db">
+					<i class='bx bxs-dashboard' ></i>
+					<span class="text">Dashboard</span>
+				</a>
+			</li>
+			<li>
+				<a href="#" id="sidebarStockLink">
+					<i class='bx bxs-package' ></i>
+					<span class="text">My Stocks</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bxs-doughnut-chart' ></i>
+					<span class="text">Analytics</span>
+				</a>
+			</li>
+			<li>
+				<a href="#">
+					<i class='bx bxs-message-dots' ></i>
+					<span class="text">Message</span>
+				</a>
+			</li>
+			<li>
+				<a href="#team">
+					<i class='bx bxs-group' ></i>
+					<span class="text">Team</span>
+				</a>
+			</li>
+		</ul>
+		<ul class="side-menu">
+			<li>
+				<a href="#">
+					<i class='bx bxs-cog' ></i>
+					<span class="text">Settings</span>
+				</a>
+			</li>
+			<li>
+				<a href="logout.php" class="logout">
+					<i class='bx bxs-log-out-circle' ></i>
+					<span class="text">Logout</span>
+				</a>
+			</li>
+		</ul>
+	</section>
+	<!-- SIDEBAR -->
+	<!-- CONTENT -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			<i class='bx bx-menu' ></i>
+			<a href="#" class="nav-link">Categories</a>
+			<form action="#">
+				<div class="form-input">
+					<input type="search" placeholder="Search...">
+					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+				</div>
+			</form>
+			<input type="checkbox" id="switch-mode" hidden>
+			<label for="switch-mode" class="switch-mode"></label>
+			<a href="#" class="notification">
+				<i class='bx bxs-bell' ></i>
+				<span class="num">8</span>
+			</a>
+			<a href="#" class="profile">
+				<img src="assets/bgmc-modified.png">
+			</a>
+		</nav>
+		<!-- NAVBAR -->
 
-            <!-- Widgets Section -->
-            <section class="widgets">
-                <!-- Widget 1 -->
-                <div class="widget">
-                    <h3>Total Sales</h3>
-                    <p>1,234</p>
-                </div>
-                <!-- Widget 2 -->
-                <div class="widget">
-                    <h3>Customer</h3>
-                    <p>10</p>
-                </div>
-                <!-- Widget 3 -->
-                <div class="widget">
-                    <h3>Product</h3>
-                    <p>89</p>
-                </div>
-                <div class="widget">
-                    <h3>Stock</h3>
-                    <p>89</p>
-                </div>
-            </section>
+		<!-- MAIN -->
+		<main>
+			<div class="head-title">
+				<div class="left" id="db">
+					<h1>Dashboard</h1>
+						<!--<li><i class='bx bx-chevron-right' ></i></li>-->
+				</div>
+				<a href="#" class="btn-download">
+					<i class='bx bxs-cloud-download' ></i>
+					<span class="text">Download PDF</span>
+				</a>
+			</div>
 
-            <!-- Charts Section -->
-            <section class="charts">
-                <!-- Line Chart Container -->
-                <div class="chart-container">
-                    <h1>Monthly Sales</h1>
-        <canvas id="salesChart" class="chart"></canvas>
-    </div>
+			<ul class="box-info">
+                <li class="collapsible-box">
+                     <div class="box-header">
+                        <i class='bx bxs-shopping-bag'></i>
+					    <span class="text">
+						<h3>80</h3>
+						<p>Products</p>
+					    </span>
+                     </div>
+                     <div class="box-content">
+			            <p>Additional details about Products...</p>
+		            </div>
+				</li>
+                <li class="collapsible-box" id="stockBox">
+                    <div class="box-header">
+					    <i class='bx bxs-package' ></i>
+					    <span class="text">
+						<h3>80</h3>
+						<p>Stocks</p>
+					    </span>
+                    </div>
+                    <div class="box-content">
+			            <p>More info about Stocks...</p>
+		            </div>
+				</li>
+                <li class="collapsible-box">
+                    <div class="box-header">
+					    <i class='bx bxs-group' ></i>
+                        <span class="text">
+                            <h3>768</h3>
+                            <p>Suppliers</p>
+                        </span>
+                    </div>
+                    <div class="box-content">
+			            <p>More info about Suppliers...</p>
+		            </div>
+				</li>
+                <li class="collapsible-box">
+                    <div class="box-header">
+					    <i class='bx bxs-dollar-circle' ></i>
+                        <span class="text">
+                            <h3>₱75230</h3>
+                            <p>Total Transactions</p>
+                        </span>
+                    </div>
+                    <div class="box-content">
+			            <p>More info about Total Transactions...</p>
+		            </div>
+				</li>
+			</ul>
+
+            <div class="graphBox">
+                <div class="box">
+                    <canvas id="myChart"></canvas>
+                </div>
+                <div class="box">
+                    <canvas id="myChart2"></canvas>
+                </div>
+               </div>
+
+			<div class="table-data">
+				<div class="employee-list" id="team">
+					<div class="head">
+						<h3>Employee List</h3>
+						<i class='bx bx-search' ></i>
+						<i class='bx bx-filter' ></i>
+					</div>
+					<table>
+						<thead>
+							<tr>
+								<th>User</th>
+								<th>Status</th>
+								<th>Role</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<img src="img/people.png">
+									<p>John Wick</p>
+								</td>
+								<td>Full Time</td>
+								<td><span class="status manager">Manager</span></td>
+							</tr>
+							<tr>
+								<td>
+									<img src="assets/nel.jpg">
+									<p>Nel Garin</p>
+								</td>
+								<td>Full Time</td>
+								<td><span class="status employee">Employee</span></td>
+							</tr>
+							<tr>
+								<td>
+									<img src="assets/RM.jpg">
+									<p>RM Santos</p>
+								</td>
+								<td>Full Time</td>
+								<td><span class="status employee">Employee</span></td>
+							</tr>
+							<tr>
+								<td>
+									<img src="assets/JArmonio.jpg">
+									<p>Janjan Armonio</p>
+								</td>
+								<td>Full Time</td>
+								<td><span class="status employee">Employee</span></td>
+							</tr>
+							<tr>
+								<td>
+									<img src="assets/mirror shot.jpg">
+									<p>Allen</p>
+								</td>
+								<td>Part TIme</td>
+								<td><span class="status employee">Employee</span></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="activity-log">
+					<div class="head">
+						<h3>Activity Logs</h3>
+					</div>
+					<ul class="activity-log-list">
+						<li class="log-list">
+							<p>Add Items</p>
+							<button class="add-item-button" id="add-item-button">Add</button>
+						</li>
+						<li class="log-list">
+							<p>Edit Items</p>
+							<button class="edit-item-button" id="edit-item-button">Edit</button>
+						</li>
+						<li class="log-list">
+							<p>Archive Items</p>
+							<button class="archive-item-button" id="archive-item-button">Archive</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+            <div id="addItemSidebar" class="activity-sidebar">
+                <div class="sidebar-header">
+                    <h3>Add Items into Inventory</h3>
+                    <button id="closeAddItemSidebar">&times;</button>
+                </div>
+                <form id="addItemForm" method="POST" action="addprod.php">
+                    <div class="sidebar-content">
+                        <label>Item Name:</label>
+                        <input type="text" name= "product_name"placeholder="Enter item name" />
+                        <br><br>
+                        <label>Unit Price</label>
+                        <input type="text" name="unit_price"placeholder="Enter Price" />
+                        <br><br>
+                        <label>Quantity:</label>
+                        <input type="number" name="quantity"placeholder="Enter quantity" />
+                        <br><br>
+                        <button>Add Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+		</main>
+		<!-- MAIN -->
+	</section>
+	<!-- CONTENT -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+	<script src="scripts/scripts.js"></script>
     <script>
-        const ctx = document.getElementById('salesChart').getContext('2d');
-        const salesChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['January', 'February', 'March', 'April', 'May'],
-                datasets: [{
-                    label: 'Sales',
-                    data: [12000, 15000, 18000, 20000, 22000],
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+        // Close sidebar when clicking outside of it
+    document.addEventListener('click', function(event) {
+    const isClickInsideSidebar = addItemSidebar.contains(event.target);
+    const isClickOnButton = openAddItemBtn.contains(event.target);
+
+    if (!isClickInsideSidebar && !isClickOnButton) {
+        addItemSidebar.classList.remove('open');
+    }
+});
+
+    const addItemSidebar = document.getElementById('addItemSidebar');
+    const openAddItemBtn = document.getElementById('add-item-button');
+    const closeAddItemBtn = document.getElementById('closeAddItemSidebar');
+
+    openAddItemBtn.addEventListener('click', () => {
+    addItemSidebar.classList.add('open');
+    });
+
+    closeAddItemBtn.addEventListener('click', () => {
+    addItemSidebar.classList.remove('open');
+    });
+    document.querySelectorAll('.box-header').forEach(header => {
+	header.addEventListener('click', () => {
+		const parent = header.parentElement;
+		parent.classList.toggle('active');
+	});
+});
+document.getElementById('sidebarStockLink').addEventListener('click', function (e) {
+	e.preventDefault(); // Prevent default anchor behavior
+
+	const stockBox = document.getElementById('stockBox');
+	stockBox.classList.toggle('active');
+});
+    const labels = <?php echo json_encode(array_column($products, 'product_name')); ?>;
+    const data = <?php echo json_encode(array_column($products, 'quantity')); ?>;
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar', // or 'pie', 'line', etc.
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Product Quantity',
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
             }
-        });
-    </script>
+        }
+    });
+</script>
+
 </body>
-                    <canvas id="lineChart"></canvas>
-                </div>
-                <!-- Bar Chart Container -->
-                <div class="chart-container">
-                    <canvas id="barChart"></canvas>
-                </div>
-            </section>
-        </div>
-    </div>
-    <!-- Link to external JavaScript file -->
-    <script src="script.js"></script>
-</body>
+</html>

@@ -56,7 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<section id="sidebar">
 		<a href="#" class="brand">
 			<i class='bx bxs-smile'></i>
-			<span class="text">Welcome, Admin</span>
+			<span>Welcome 
+<strong>
+    <?= isset($_SESSION['username']) 
+        ? htmlspecialchars($_SESSION['username']) 
+        : 'Unknown' ?>
+  </strong>
+  </span>
 		</a>
 		<ul class="side-menu top">
 			<li class="active">
@@ -98,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</a>
 			</li>
 			<li>
-				<a href="#" class="logout">
+				<a href="logout.php" class="logout">
 					<i class='bx bxs-log-out-circle' ></i>
 					<span class="text">Logout</span>
 				</a>
@@ -220,7 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 							</tr>
 							<tr>
 								<td>
-									<img src="img/people.png">
+									<img src="assets/nel.jpg">
 									<p>Nel Garin</p>
 								</td>
 								<td>Full Time</td>
@@ -228,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 							</tr>
 							<tr>
 								<td>
-									<img src="img/people.png">
+									<img src="assets/RM.jpg">
 									<p>RM Santos</p>
 								</td>
 								<td>Full Time</td>
@@ -236,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 							</tr>
 							<tr>
 								<td>
-									<img src="img/people.png">
+									<img src="assets/JArmonio.jpg">
 									<p>Janjan Armonio</p>
 								</td>
 								<td>Full Time</td>
@@ -244,7 +250,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 							</tr>
 							<tr>
 								<td>
-									<img src="img/people.png">
+									<img src="assets/mirror shot.jpg">
 									<p>Allen</p>
 								</td>
 								<td>Part TIme</td>
@@ -259,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					</div>
 					<ul class="activity-log-list">
 						<li class="log-list">
-							<p>Add Items</p>
+							<input type="text" name="add-item" placeholder="Add Item6">
 							<button class="add-item-button" id="add-item-button">Add</button>
 						</li>
 						<li class="log-list">

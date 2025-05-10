@@ -47,8 +47,8 @@ $superadminExists = $stmt->fetchColumn() > 0;
 <div class="modal1">
   <h2>Create Superadmin</h2>
     <form action="cresupad.php" method="POST" autocomplete="off">
-    <input type="text" name="firstName" placeholder="First Name" required><br>
-    <input type="text" name="lastName" placeholder="Last Name" required><br>
+    <input type="text" name="fname" placeholder="First Name" required><br>
+    <input type="text" name="lname" placeholder="Last Name" required><br>
     <input type="text" name="email" placeholder="Email" required><br>
     <input type="text" name="username" placeholder="Username" required><br>
     <input type="password" name="password" placeholder="Password" required><br>
@@ -284,8 +284,6 @@ Users will be notified of significant changes.
 function closeModal(id) {
   document.getElementById(id).style.display = "none";
 }
-
-// Optional: Close modal when clicking outside of it
 window.onclick = function(event) {
   const loginModal = document.getElementById("loginModal");
   const registrationModal = document.getElementById("registrationModal");

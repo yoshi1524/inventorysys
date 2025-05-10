@@ -16,18 +16,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['fname'] = $user['fname'];
         $_SESSION['lname'] = $user['lname'];
 
-        // redirect based on role
-        if ($user['user_level_id'] == 1) {
-            header("Location: supad.php");
-        } elseif ($user['user_level_id'] == 2) {
-            header("Location: mandash.php");
-        } else {
-            header("Location: crewdashboard.php");
-        }
-        exit();
-    } else {
-        $error = "Invalid username or password.";
-    }
+       // Check user level and redirect
+       if ($user['user_level_id'] == 1) {
+        header('Location: supad.php');
+    } elseif ($user['user_level_id'] == 2) {
+        header('Location: owndash.php');
+    }elseif($user['user_level_id'] == 3) {
+        header('Location: mandash.php');
+    } elseif ($user['user_level_id'] == 4) {
+        header('Location: crewdashboard.php');
+    } else
+    exit();
+} else {
+    // Invalid credentials
+    echo "<script>alert('Incorrect username or password.'); window.location.href = 'landing.php';</script>";
+    exit();
+}
 }
 ?>
 <!DOCTYPE html>

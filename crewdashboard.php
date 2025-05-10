@@ -57,10 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <aside class="sidebar">
       <nav>
         <ul>
-         
             <li><a href="#">Dashboard</a></li>
             <li><a href="#">Crew View</a></li>
             <li><a href="#">Report</a></li>
+            <li><a href="logout.php">Logout</a></li>
         </ul>
         </ul>
       </nav>
@@ -86,7 +86,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <h3>Johnric</h3>
           <p>Crew staff</p>
           <p>Experience: 7 years</p>
-          <button class="view-btn">View Profile</button>
+          <a href="johnric.html" class="view-btn">View Profile</a>
+
         </div>
         <div class="crew-card">
             <h3>Nel Crimson</h3>
