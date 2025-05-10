@@ -1,23 +1,34 @@
 <?php
 session_start();
-require_once 'db.php'; // This must define $pdo
+require_once 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $product_name = trim($_POST['product_name']);
-    $unit_price = $_POST['unit_price'];
-    $quantity = $_POST['quantity'];
+    $names = $_POST['product_name'];
+    $prices = $_POST['unit_price'];
+    $quantities = $_POST['quantity'];
 
-    if (!empty($product_name) && is_numeric($unit_price) && is_numeric($quantity)) {
-        try {
-            $stmt = $pdo->prepare("INSERT INTO product (product_name, unit_price, quantity) VALUES (?, ?, ?)");
-            $stmt->execute([$product_name, $unit_price, $quantity]);
+    $successCount = 0;
+    $errorCount = 0;
 
-            echo "<script>alert(" . json_encode('Item added successfully.') . "); window.location.href = 'mandash.php';</script>";
-        } catch (PDOException $e) {
-            echo "<script>alert(" . json_encode('Database error: ' . $e->getMessage()) . "); window.history.back();</script>";
+    for ($i = 0; $i < count($names); $i++) {
+        $name = trim($names[$i]);
+        $price = $prices[$i];
+        $qty = $quantities[$i];
+
+        if (!empty($name) && is_numeric($price) && is_numeric($qty)) {
+            try {
+                $stmt = $pdo->prepare("INSERT INTO product (product_name, unit_price, quantity) VALUES (?, ?, ?)");
+                $stmt->execute([$name, $price, $qty]);
+                $successCount++;
+            } catch (PDOException $e) {
+                $errorCount++;
+            }
+        } else {
+            $errorCount++;
         }
-    } else {
-        echo "<script>alert(" . json_encode('Invalid input. Please check the form.') . "); window.history.back();</script>";
     }
+
+    echo "<script>alert('Added $successCount items. $errorCount errors.'); window.history.back();</script>";
 }
 ?>
+

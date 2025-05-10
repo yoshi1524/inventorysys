@@ -8,7 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
     $stmt->execute([$username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
     // Fetch product data
     $stmt = $pdo->query("SELECT product_name, quantity FROM product");
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -120,6 +119,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				<a href="#team">
 					<i class='bx bxs-group' ></i>
 					<span class="text">Team</span>
+				</a>
+			</li>
+            <li>
+				<a href="adduse.php">
+					<i class='bx bxs-group' ></i>
+					<span class="text">Add User</span>
 				</a>
 			</li>
 		</ul>
@@ -320,32 +325,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <h3>Add Items into Inventory</h3>
                     <button id="closeAddItemSidebar">&times;</button>
                 </div>
-                <form id="addItemForm" method="POST" action="addprod.php">
-                    <div class="sidebar-content">
-                        <label>Item Name:</label>
-                        <input type="text" name= "product_name"placeholder="Enter item name" />
-                        <br><br>
-                        <label>Unit Price</label>
-                        <input type="text" name="unit_price"placeholder="Enter Price" />
-                        <br><br>
-                        <label>Quantity:</label>
-                        <input type="number" name="quantity"placeholder="Enter quantity" />
-                        <br><br>
-                        <button>Add Item</button>
+                <form id="multiItemForm" method="POST" action="addprod.php">
+                    <div id="itemContainer">
+                        <div class="item-entry">
+                            <input type="text" name="product_name[]" placeholder="Item name" required>
+                            <input type="number" name="unit_price[]" placeholder="Unit price" required>
+                            <input type="number" name="quantity[]" placeholder="Quantity" required>
+                            <button type="button" class="removeItemBtn">Remove</button>
+                        </div>
                     </div>
+                    <button type="button" id="addItemBtn">Add Another Item</button>
+                    <br><br>
+                    <button type="submit">Submit All Items</button>
                 </form>
+
             </div>
         </div>
-
-
 		</main>
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
+
+
+    <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
 	<script src="scripts/scripts.js"></script>
+
     <script>
-        // Close sidebar when clicking outside of it
+    // Close sidebar when clicking outside of it
     document.addEventListener('click', function(event) {
     const isClickInsideSidebar = addItemSidebar.contains(event.target);
     const isClickOnButton = openAddItemBtn.contains(event.target);
@@ -354,7 +361,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         addItemSidebar.classList.remove('open');
     }
 });
-
+//for adding items
     const addItemSidebar = document.getElementById('addItemSidebar');
     const openAddItemBtn = document.getElementById('add-item-button');
     const closeAddItemBtn = document.getElementById('closeAddItemSidebar');
@@ -372,37 +379,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		parent.classList.toggle('active');
 	});
 });
-document.getElementById('sidebarStockLink').addEventListener('click', function (e) {
+//for boxes
+    document.getElementById('sidebarStockLink').addEventListener('click', function (e) {
 	e.preventDefault(); // Prevent default anchor behavior
 
 	const stockBox = document.getElementById('stockBox');
 	stockBox.classList.toggle('active');
 });
-    const labels = <?php echo json_encode(array_column($products, 'product_name')); ?>;
-    const data = <?php echo json_encode(array_column($products, 'quantity')); ?>;
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("itemContainer");
+    const addItemBtn = document.getElementById("addItemBtn");
 
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const myChart = new Chart(ctx, {
-        type: 'bar', // or 'pie', 'line', etc.
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Product Quantity',
-                data: data,
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+    addItemBtn.addEventListener("click", () => {
+        const entry = document.createElement("div");
+        entry.classList.add("item-entry");
+        entry.innerHTML = `
+            <input type="text" name="product_name[]" placeholder="Item name" required>
+            <input type="number" name="unit_price[]" placeholder="Unit price" required>
+            <input type="number" name="quantity[]" placeholder="Quantity" required>
+            <button type="button" class="removeItemBtn">Remove</button>
+        `;
+        container.appendChild(entry);
+    });
+
+    container.addEventListener("click", (e) => {
+        if (e.target.classList.contains("removeItemBtn")) {
+            e.target.parentElement.remove();
         }
     });
+});
 </script>
 
 </body>

@@ -559,6 +559,18 @@ body {
     transition: 0.3s ease;
 	cursor: pointer;
 }
+.activity-log .activity-log-list .log-list .order-item-button{
+	font-family: "Poppins", sans-serif;
+	padding: 5px 20px;
+    color: white;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    background-color: rgba(10, 138, 21, 0.719);
+    border-radius: 50px;
+    border: 1px solid #171717;
+    transition: 0.3s ease;
+	cursor: pointer;
+}
 
 
 
