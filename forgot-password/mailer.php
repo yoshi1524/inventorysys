@@ -1,26 +1,21 @@
 <?php
-
-require __DIR__ . '/../PHPMailer/src/Exception.php';
-require __DIR__ . '/../PHPMailer/src/PHPMailer.php';
-require __DIR__ . '/../PHPMailer/src/SMTP.php';
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-$mail = new PHPMailer(true);
+require __DIR__ . '/../vendor/autoload.php'; // Make sure this path is correct
 
-// $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+$mail = new PHPMailer(true);
 
 $mail->isSMTP();
 $mail->SMTPAuth = true;
 
-$mail->Host = "smtp.example.com";
-$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+$mail->Host = "smtp.gmail.com";
 $mail->Port = 587;
-$mail->Username = "your-user@example.com";
-$mail->Password = "your-password";
+$mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+$mail->Username = "nelchrimson@gmail.com";           // Replace this with your Gmail address
+$mail->Password = "divc ntot qbkm fqmm";              // Replace this with your Gmail App Password
 
-$mail->isHtml(true);
+$mail->isHTML(true);
 
 return $mail;
