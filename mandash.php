@@ -12,6 +12,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->query("SELECT product_name, quantity FROM product");
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+	// Fetch total supplier count
+	$supplierCount = 0;
+	$suppliers = [];
+	
+	try {
+		$stmt = $pdo->query("SELECT COUNT(*) as total FROM supplier");
+		$row = $stmt->fetch();
+		$supplierCount = $row ? $row['total'] : 0;
+	
+		// Fetch supplier list
+		$stmt = $pdo->query("SELECT supplier_name, contact_person, phone FROM supplier");
+		$suppliers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	} catch (PDOException $e) {
+		echo "Database error: " . $e->getMessage();
+	}
+
 
     // Verify user exists and password matches
     if ($user && password_verify($password, $user['password'])) {
@@ -152,9 +168,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			<a href="#" class="nav-link">Categories</a>
 			<form action="#">
 				<div class="form-input">
-					<input type="search" placeholder="Search...">
+					<input type="search" placeholder="Search..." id="live-search" autocomplete="off">
 					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
 				</div>
+				<div id="search-results"></div>
+
+				<script>
+document.querySelector('.search-btn').addEventListener('click', function (e) {
+    e.preventDefault(); // Prevent form submission if it's inside a form
+
+    const query = document.getElementById('live-search').value.trim();
+
+    if (query === '') {
+        document.getElementById('search-results').innerHTML = ''; // Clear results
+        return; // Don't send the request
+    }
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'serach.php', true); // Make sure it's spelled correctly
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    xhr.onload = function () {
+        if (this.status === 200) {
+            document.getElementById('search-results').innerHTML = this.responseText;
+        }
+    };
+
+    xhr.send('query=' + encodeURIComponent(query));
+});
+</script>
+
 			</form>
 			<input type="checkbox" id="switch-mode" hidden>
 			<label for="switch-mode" class="switch-mode"></label>
@@ -182,18 +225,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			</div>
 
 			<ul class="box-info">
-                <li class="collapsible-box">
-                     <div class="box-header">
-                        <i class='bx bxs-shopping-bag'></i>
-					    <span class="text">
-						<h3>80</h3>
-						<p>Products</p>
-					    </span>
-                     </div>
-                     <div class="box-content">
-			            <p>Additional details about Products...</p>
-		            </div>
-				</li>
+			<li class="collapsible-box">
+				<div class="box-header">
+					<i class='bx bxs-shopping-bag'></i>
+					<span class="text">
+						<?php
+						include 'db.php';
+
+						$stmt = $pdo->query("SELECT COUNT(*) as total FROM product_categories");
+						$row = $stmt->fetch();
+						$totalProducts = $row['total'];
+						?>
+						<h3><?= $totalProducts ?></h3>
+						<p>Product Categories</p>
+					</span>
+				</div>
+			</li>
+
                 <li class="collapsible-box" id="stockBox">
                     <div class="box-header">
 					    <i class='bx bxs-package' ></i>
@@ -207,17 +255,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		            </div>
 				</li>
                 <li class="collapsible-box">
-                    <div class="box-header">
-					    <i class='bx bxs-group' ></i>
-                        <span class="text">
-                            <h3>768</h3>
-                            <p>Suppliers</p>
-                        </span>
-                    </div>
-                    <div class="box-content">
-			            <p>More info about Suppliers...</p>
-		            </div>
-				</li>
+				<div class="box-header">
+					<i class='bx bxs-group'></i>
+					<span class="text">
+					<?php
+						include 'db.php';
+
+						$stmt = $pdo->query("SELECT COUNT(*) as total FROM supplier");
+						$row = $stmt->fetch();
+						$totalSupp = $row['total'];
+						?>
+						<h3><?= $totalSupp ?></h3>
+						<p>Suppliers</p>
+					</span>
+				</div>
+    <div class="box-content">
+        <ul>
+		<?php
+						//$stmt = $pdo->query("SELECT supplier_name FROM product");
+						// ($supplier = $stmt->fetch(PDO::FETCH_ASSOC)) {
+						//	echo "<li>";
+						//	echo "<strong>" . htmlspecialchars($product['product_name']) . "</strong><br>";
+							//echo "Price: ₱" . number_format($product['unit_price'], 2) . "<br>";
+//echo "Quantity: " . intval($product['quantity']);
+						//	echo "</li>";
+//}
+						?>
+        </ul>
+    </div>
+</li>
+
                 <li class="collapsible-box">
                     <div class="box-header">
 					    <i class='bx bxs-dollar-circle' ></i>
@@ -302,7 +369,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</div>
 				<div class="activity-log">
 					<div class="head">
-						<h3>Activity Logs</h3>
+						<h3>Items Management</h3>
 					</div>
 					<ul class="activity-log-list">
 						<li class="log-list">
@@ -333,12 +400,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="number" name="quantity[]" placeholder="Quantity" required>
                             <button type="button" class="removeItemBtn">Remove</button>
                         </div>
+						<!-- Category Dropdown -->
+						<select name="category[]" required>
+						<option value="">Select Category</option>
+						<?php
+						// Fetch categories from the product_categories table
+						$stmt = $pdo->query("SELECT category_name FROM product_categories");
+						while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+							echo "<option value=\"" . htmlspecialchars($row['category_name']) . "\">" . htmlspecialchars($row['category_name']) . "</option>";
+						}
+						?>
+						</select>
                     </div>
-                    <button type="button" id="addItemBtn">Add Another Item</button>
-                    <br><br>
-                    <button type="submit">Submit All Items</button>
+						<button type="button" id="addItemBtn">Add Another Item</button>
+						<br><br>
+						<button type="submit">Submit All Items</button>
                 </form>
-
             </div>
         </div>
 		</main>
@@ -350,7 +427,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
 	<script src="scripts/scripts.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
+	<script type ="text/javascript">
+			$(document).ready(function(){
+				$("#live-search").on("keyup", function() {
+					var input = $(this).val();
+						if(input != "") {
+							$.ajax({
+								url: "search.php",
+								method: "POST",
+								data: {input: input},
+								success: function(data) {
+									$("#searchresult").html(data);
+								}
+							});
+						} else {
+							$("#searchresult").css("display", "none");
+						}
+
+
+					$(".employee-list tbody tr").filter(function() {
+						$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+					});
+				});
+			});
+	</script>
     <script>
     // Close sidebar when clicking outside of it
     document.addEventListener('click', function(event) {

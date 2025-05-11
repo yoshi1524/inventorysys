@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $names = $_POST['product_name'];
     $prices = $_POST['unit_price'];
     $quantities = $_POST['quantity'];
+    $categories = trim('category')[$i];
 
     $successCount = 0;
     $errorCount = 0;
@@ -14,11 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name = trim($names[$i]);
         $price = $prices[$i];
         $qty = $quantities[$i];
+        $category = trim($categories[$i]);
 
         if (!empty($name) && is_numeric($price) && is_numeric($qty)) {
             try {
-                $stmt = $pdo->prepare("INSERT INTO product (product_name, unit_price, quantity) VALUES (?, ?, ?)");
-                $stmt->execute([$name, $price, $qty]);
+                $stmt = $pdo->prepare("INSERT INTO product (category, product_name, unit_price, quantity) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$categories, $name, $price, $qty]);
                 $successCount++;
             } catch (PDOException $e) {
                 $errorCount++;
