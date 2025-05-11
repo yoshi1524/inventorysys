@@ -2,7 +2,7 @@
 session_start();
 require 'db.php';
 // Check if a superadmin exists
-$stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE user_level = 'superadmin'");
+$stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE user_level_id = 1");
 $superadminExists = $stmt->fetchColumn() > 0;
 ?>
 <!DOCTYPE html>
