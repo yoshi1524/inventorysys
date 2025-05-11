@@ -8,6 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
     $stmt->execute([$username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Fetch product data
+    $stmt = $pdo->query("SELECT product_name, quantity FROM product");
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
     // Verify user exists and password matches
     if ($user && password_verify($password, $user['password'])) {
@@ -45,9 +49,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<!-- Boxicons -->
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<!-- My CSS -->
-	<link rel="stylesheet" href="owndashb.css">
+	<link rel="stylesheet" href="owndashbb.css">
 
-	<title>AdminHub</title>
+	<title>Manager Hub</title>
+    <style>
+        .box-content {
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.3s ease, opacity 0.3s ease;
+	opacity: 0;
+	padding-left: 1rem;
+}
+
+.collapsible-box.active .box-content {
+	max-height: 200px; /* Adjust as needed */
+	opacity: 1;
+}
+.box-header {
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	gap: 10px;
+}
+
+    </style>
 </head>
 <body>
 
@@ -66,19 +92,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		</a>
 		<ul class="side-menu top">
 			<li class="active">
-				<a href="#">
+				<a href="#db">
 					<i class='bx bxs-dashboard' ></i>
 					<span class="text">Dashboard</span>
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<a href="#" id="sidebarStockLink">
 					<i class='bx bxs-package' ></i>
 					<span class="text">My Stocks</span>
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<a href="#myChart">
 					<i class='bx bxs-doughnut-chart' ></i>
 					<span class="text">Analytics</span>
 				</a>
@@ -90,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<a href="#team">
 					<i class='bx bxs-group' ></i>
 					<span class="text">Team</span>
 				</a>
@@ -112,9 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		</ul>
 	</section>
 	<!-- SIDEBAR -->
-
-
-
 	<!-- CONTENT -->
 	<section id="content">
 		<!-- NAVBAR -->
@@ -134,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				<span class="num">8</span>
 			</a>
 			<a href="#" class="profile">
-				<img src="img/people.png">
+				<img src="assets/bgmc-modified.png">
 			</a>
 		</nav>
 		<!-- NAVBAR -->
@@ -142,17 +165,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		<!-- MAIN -->
 		<main>
 			<div class="head-title">
-				<div class="left">
+				<div class="left" id="db">
 					<h1>Dashboard</h1>
-					<ul class="breadcrumb">
-						<li>
-							<a href="#">Dashboard</a>
-						</li>
-						<li><i class='bx bx-chevron-right' ></i></li>
-						<li>
-							<a class="active" href="#">Home</a>
-						</li>
-					</ul>
+						<!--<li><i class='bx bx-chevron-right' ></i></li>-->
 				</div>
 				<a href="#" class="btn-download">
 					<i class='bx bxs-cloud-download' ></i>
@@ -161,33 +176,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			</div>
 
 			<ul class="box-info">
-				<li>
-					<i class='bx bxs-shopping-bag'></i>
-					<span class="text">
+                <li class="collapsible-box">
+                     <div class="box-header">
+                        <i class='bx bxs-shopping-bag'></i>
+					    <span class="text">
 						<h3>80</h3>
-						<p>Items</p>
-					</span>
+						<p>Products</p>
+					    </span>
+                     </div>
+                     <div class="box-content">
+			            <p>Additional details about Products...</p>
+		            </div>
 				</li>
-				<li>
-					<i class='bx bxs-package' ></i>
-					<span class="text">
+                <li class="collapsible-box" id="stockBox">
+                    <div class="box-header">
+					    <i class='bx bxs-package' ></i>
+					    <span class="text">
 						<h3>80</h3>
 						<p>Stocks</p>
-					</span>
+					    </span>
+                    </div>
+                    <div class="box-content">
+			            <p>More info about Stocks...</p>
+		            </div>
 				</li>
-				<li>
-					<i class='bx bxs-group' ></i>
-					<span class="text">
-						<h3>768</h3>
-						<p>Customers</p>
-					</span>
+                <li class="collapsible-box">
+                    <div class="box-header">
+					    <i class='bx bxs-group' ></i>
+                        <span class="text">
+                            <h3>768</h3>
+                            <p>Suppliers</p>
+                        </span>
+                    </div>
+                    <div class="box-content">
+			            <p>More info about Suppliers...</p>
+		            </div>
 				</li>
-				<li>
-					<i class='bx bxs-dollar-circle' ></i>
-					<span class="text">
-						<h3>₱75230</h3>
-						<p>Total Sales</p>
-					</span>
+                <li class="collapsible-box">
+                    <div class="box-header">
+					    <i class='bx bxs-dollar-circle' ></i>
+                        <span class="text">
+                            <h3>₱75230</h3>
+                            <p>Total Transactions</p>
+                        </span>
+                    </div>
+                    <div class="box-content">
+			            <p>More info about Total Transactions...</p>
+		            </div>
 				</li>
 			</ul>
 
@@ -201,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                </div>
 
 			<div class="table-data">
-				<div class="employee-list">
+				<div class="employee-list" id="team">
 					<div class="head">
 						<h3>Employee List</h3>
 						<i class='bx bx-search' ></i>
@@ -259,34 +294,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 						</tbody>
 					</table>
 				</div>
-				<div class="activity-log">
-					<div class="head">
-						<h3>Activity Logs</h3>
-					</div>
-					<ul class="activity-log-list">
-						<li class="log-list">
-							<input type="text" name="add-item" placeholder="Add Item6">
-							<button class="add-item-button" id="add-item-button">Add</button>
-						</li>
-						<li class="log-list">
-							<p>Edit Items</p>
-							<button class="edit-item-button" id="edit-item-button">Edit</button>
-						</li>
-						<li class="log-list">
-							<p>Archive Items</p>
-							<button class="archive-item-button" id="archive-item-button">Archive</button>
-						</li>
-					</ul>
-				</div>
 			</div>
-              	
-
+        </div>
 		</main>
 		<!-- MAIN -->
 	</section>
 	<!-- CONTENT -->
-	
+
+
+    <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
-	<script src="scripts.js"></script>
+	<script src="scripts/scripts.js"></script>
+
+    <script>
+    // Close sidebar when clicking outside of it
+    document.addEventListener('click', function(event) {
+    const isClickInsideSidebar = addItemSidebar.contains(event.target);
+    const isClickOnButton = openAddItemBtn.contains(event.target);
+
+    if (!isClickInsideSidebar && !isClickOnButton) {
+        addItemSidebar.classList.remove('open');
+    }
+});
+//for adding items
+    const addItemSidebar = document.getElementById('addItemSidebar');
+    const openAddItemBtn = document.getElementById('add-item-button');
+    const closeAddItemBtn = document.getElementById('closeAddItemSidebar');
+
+    openAddItemBtn.addEventListener('click', () => {
+    addItemSidebar.classList.add('open');
+    });
+
+    closeAddItemBtn.addEventListener('click', () => {
+    addItemSidebar.classList.remove('open');
+    });
+    document.querySelectorAll('.box-header').forEach(header => {
+	header.addEventListener('click', () => {
+		const parent = header.parentElement;
+		parent.classList.toggle('active');
+	});
+});
+//for boxes
+    document.getElementById('sidebarStockLink').addEventListener('click', function (e) {
+	e.preventDefault(); // Prevent default anchor behavior
+
+	const stockBox = document.getElementById('stockBox');
+	stockBox.classList.toggle('active');
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById("itemContainer");
+    const addItemBtn = document.getElementById("addItemBtn");
+
+    addItemBtn.addEventListener("click", () => {
+        const entry = document.createElement("div");
+        entry.classList.add("item-entry");
+        entry.innerHTML = `
+            <input type="text" name="product_name[]" placeholder="Item name" required>
+            <input type="number" name="unit_price[]" placeholder="Unit price" required>
+            <input type="number" name="quantity[]" placeholder="Quantity" required>
+            <button type="button" class="removeItemBtn">Remove</button>
+        `;
+        container.appendChild(entry);
+    });
+
+    container.addEventListener("click", (e) => {
+        if (e.target.classList.contains("removeItemBtn")) {
+            e.target.parentElement.remove();
+        }
+    });
+});
+</script>
+
 </body>
 </html>

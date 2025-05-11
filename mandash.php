@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</a>
 			</li>
             <li>
-				<a href="adduse.php">
+				<a href="manadduse.php">
 					<i class='bx bxs-group' ></i>
 					<span class="text">Add User</span>
 				</a>
