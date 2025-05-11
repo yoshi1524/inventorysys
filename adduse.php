@@ -9,12 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $user_level_id = $_POST['user_level_id'];
-    $employment_status = $_POST['employment_status'];
+    //$employment_status = $_POST['employment_status'];
 
 
     if ($fname && $lname && $username && $email && $user_level_id) {
-        $stmt = $pdo->prepare("INSERT INTO users (fname, lname, username, email, password, user_level_id, employment_status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->execute([$fname, $lname, $username, $email, $password, $user_level_id, $employment_status]);        
+        $stmt = $pdo->prepare("INSERT INTO users (fname, lname, username, email, password, user_level_id, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$fname, $lname, $username, $email, $password, $user_level_id]);        
         $message = "User created successfully!";
     } else {
         $message = "All fields are required.";

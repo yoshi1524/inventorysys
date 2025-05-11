@@ -88,8 +88,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	justify-content: start;
 	gap: 10px;
 }
+/* Modal Styles */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+}
 
-    </style>
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Change the width as needed */
+  max-width: 600px;
+}
+
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  float: right;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.notification {
+  position: relative;
+  cursor: pointer;
+}
+
+.notif-dropdown {
+  display: none;
+  position: absolute;
+  top: 40px; /* Adjust to position below the bell */
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  width: 300px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  z-index: 999;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.notif-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notif-dropdown ul li {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.notif-dropdown ul li:last-child {
+  border-bottom: none;
+}
+</style>
+
+</style>
+
+
+    </styl>
 </head>
 <body>
 
@@ -126,11 +200,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<a href="#"id="openReportModalBtn">
 					<i class='bx bxs-message-dots' ></i>
-					<span class="text">Message</span>
+					<span class="text">Reports</span>
 				</a>
 			</li>
+			<!-- Modal Structure for Report Submission -->
+			<div id="reportModal" class="modal">
+				<div class="modal-content">
+					<span class="close" id="closeReportModal">&times;</span>
+					<h2>Submit Report</h2>
+					<form action="submitrep.php" method="POST">
+					<label for="title">Title:</label><br>
+					<input type="text" id="title" name="title" required><br><br>
+
+					<label for="content">Content:</label><br>
+					<textarea id="content" name="content" rows="5" required></textarea><br><br>
+
+					<!-- Hidden user_id (you can replace this with session ID logic) -->
+					<input type="hidden" name="user_id" value="1">
+
+					<button type="submit" style="background: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px;">
+						Submit
+					</button>
+					</form>
+				</div>
+			</div>
 			<li>
 				<a href="#team">
 					<i class='bx bxs-group' ></i>
@@ -145,12 +240,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			</li>
 		</ul>
 		<ul class="side-menu">
-			<li>
-				<a href="#">
-					<i class='bx bxs-cog' ></i>
-					<span class="text">Settings</span>
-				</a>
-			</li>
+			<!-- Sidebar Button -->
+<li>
+  <a href="#" id="openModalBtn">
+    <i class='bx bxs-cog'></i>
+    <span class="text">My Orders</span>
+  </a>
+</li>
+
+<!-- Modal Structure -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModalBtn">&times;</span>
+    <h2>My Orders</h2>
+    <p>Here you can view and manage your orders.</p>
+	<button id="addOrderBtn" style="margin-bottom: 15px; padding: 8px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+      + Add Order
+	  <script>
+document.getElementById("addOrderBtn").onclick = function() {
+  window.location.href = "add_order.php";
+};
+</script>
+
+    </button>
+	<div id="ordersContent">
+      <?php include 'fetchord.php'; ?> <!-- Call PHP file here -->
+    </div>
+    <!-- Add content for your modal here -->
+  </div>
+</div>
+
 			<li>
 				<a href="logout.php" class="logout">
 					<i class='bx bxs-log-out-circle' ></i>
@@ -201,10 +320,22 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 			</form>
 			<input type="checkbox" id="switch-mode" hidden>
 			<label for="switch-mode" class="switch-mode"></label>
-			<a href="#" class="notification">
-				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
+			<!-- Notification Bell -->
+			<a href="#" class="notification" id="notifBell" style="position: relative;">
+			<i class='bx bxs-bell'></i>
+			<span class="num">0</span>
 			</a>
+
+			<!-- Notification Dropdown -->
+			<div id="notifDropdown" class="notif-dropdown">
+			<h4>Notifications</h4>
+			<ul id="notifList">
+				<!-- Notifications will load here -->
+			</ul>
+			</div>
+
+
+
 			<a href="#" class="profile">
 				<img src="assets/bgmc-modified.png">
 			</a>
@@ -512,7 +643,86 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var openModalBtn = document.getElementById("openModalBtn");
+
+// Get the <span> element that closes the modal
+var closeModalBtn = document.getElementById("closeModalBtn");
+
+// When the user clicks the button, open the modal
+openModalBtn.onclick = function(event) {
+  event.preventDefault(); // Prevent default anchor behavior
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+closeModalBtn.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+document.getElementById("openReportModalBtn").onclick = function() {
+  document.getElementById("reportModal").style.display = "block";
+};
+document.getElementById("closeReportModal").onclick = function() {
+  document.getElementById("reportModal").style.display = "none";
+};
+window.onclick = function(event) {
+  if (event.target == document.getElementById("reportModal")) {
+    document.getElementById("reportModal").style.display = "none";
+  }
+};
+  // Check if the URL contains ?report=submitted
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('report') === 'submitted') {
+    alert('Report submitted successfully!');
+    // Remove the parameter from URL without reloading
+    history.replaceState(null, '', window.location.pathname);
+  }
+const bell = document.getElementById('notifBell');
+const dropdown = document.getElementById('notifDropdown');
+
+bell.addEventListener('click', function (e) {
+  e.preventDefault();
+  dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  loadNotifications();
+});
+
+window.addEventListener('click', function(e) {
+  if (!bell.contains(e.target) && !dropdown.contains(e.target)) {
+    dropdown.style.display = 'none';
+  }
+});
+
+function loadNotifications() {
+  fetch('fetchnotif.php')
+    .then(res => res.json())
+    .then(data => {
+      const notifList = document.getElementById('notifList');
+      notifList.innerHTML = '';
+      data.forEach(n => {
+        notifList.innerHTML += `<li>${n.message} <br><small>${n.created_at}</small></li>`;
+      });
+      document.querySelector('.notification .num').textContent = data.length;
+    });
+}
+
+setInterval(loadNotifications, 5000);
+loadNotifications();
+
+
+
 </script>
+  
 
 </body>
 </html>
