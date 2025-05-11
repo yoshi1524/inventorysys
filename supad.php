@@ -48,6 +48,7 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll(P
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Superadmin Dashboard - iNVAX</title>
     <style>
         body {
@@ -161,6 +162,7 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll(P
             <td><?= htmlspecialchars($user['created_at']) ?></td>
             <td>
                 <form action="deluser.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                    <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
                     <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
                     <button type="submit" class="delete-btn">Delete</button>
                 </form>

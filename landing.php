@@ -89,6 +89,10 @@ $superadminExists = $stmt->fetchColumn() > 0;
                         <button type="submit">Login</button>
                         </form>
             </div>
+            <?php if (!empty($loginError)): ?>
+    <div class="notification"><?= $loginError ?></div>
+<?php endif; ?>
+
         </div>
 <!--tech logo-->
     <section class="huhu">
