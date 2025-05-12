@@ -1,0 +1,134 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #0a0f0d;
+    color: white;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: black;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+}
+
+.logo img {
+    width: 40px;
+    margin-right: 10px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+}
+
+.nav-links a:hover {
+    color: #29b573;
+}
+
+.nav-links li a img{
+    height: 40px;
+    align-items: center;
+}
+
+/* Hero Section */
+.about-hero {
+    text-align: center;
+    padding: 80px 20px;
+    background: linear-gradient(to bottom, #081a17, #0a0f0d);
+}
+
+.about-hero h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.about-hero p {
+    font-size: 18px;
+    opacity: 0.8;
+}
+
+/* About Content */
+.about-content {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 50px 20px;
+}
+
+.content-box {
+    background-color: black;
+    padding: 20px;
+    border-radius: 10px;
+    width: 40%;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.content-box h2 {
+    color: #29b573;
+}
+
+/* Team Section */
+.team {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.team h2 {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.team-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.team-member {
+    background: black;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 200px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.team-member img {
+    width: 100px;
+    border-radius: 50%;
+}
+
+.team-member h3 {
+    margin: 10px 0 5px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background: black;
+    margin-top: 50px;
+}

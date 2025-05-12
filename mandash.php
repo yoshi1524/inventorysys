@@ -876,6 +876,23 @@ loadNotifications();
     chart2.draw(data2, options2);
   }
 
+// Function to reload orders via AJAX
+function refreshOrders() {
+  fetch('fetchord.php')
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById('ordersContent').innerHTML = data;
+    })
+    .catch(error => console.error('Error fetching orders:', error));
+}
+
+// Refresh every 5 seconds
+setInterval(() => {
+  const modal = document.getElementById('myModal');
+  if (modal && modal.style.display === 'block') { // Only refresh if modal is open
+    refreshOrders();
+  }
+}, 5000);
 
 
 

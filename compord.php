@@ -37,13 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $update = $pdo->prepare("UPDATE orders SET order_status = 'Completed' WHERE order_id = ?");
         $update->execute([$order_id]);
 
-        // Get product_id from the product table based on product_name
-        $productCheck = $pdo->prepare("SELECT * FROM product WHERE product_id = ?");
-        $productCheck->execute([$order['product_id']]);
-        if (!$productCheck->fetch()) {
-            throw new Exception("Product not found in product table.");
-        }
-        $product_id = $order['product_id'];
+        $product_id = $order['product_id']; // assuming product_id is valid
+
+
 
         // Check if product exists in inventory
         $check = $pdo->prepare("SELECT * FROM inventory WHERE product_id = ?");
