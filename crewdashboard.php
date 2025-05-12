@@ -1,42 +1,25 @@
 <?php
-session_start();
-require 'db.php';
+$host = "localhost";       // or the IP address of your MySQL server
+$user = "root";            // default XAMPP username
+$password = "";            // default XAMPP password (usually empty)
+$database = "tcinv1";      // your database name
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+// Create a new MySQL connection
+$conn = new mysqli($host, $user, $password, $database);
 
-    // Get the user from DB
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->execute([$username]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    // Verify user exists and password matches
-    if ($user && password_verify($password, $user['password'])) {
-        // Set session variables
-        $_SESSION['user_id'] = $user['user_id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['user_level_id'] = $user['user_level_id'];
-        $_SESSION['fname'] = $user['first_name'];
-        $_SESSION['lname'] = $user['last_name'];
-
-        // Check user level and redirect
-        if ($user['user_level_id'] == 1) {
-            header('Location: supad.php');
-        } elseif ($user['user_level_id'] == 2) {
-            header('Location: owndash.php');
-        }elseif($user['user_level_id'] == 3) {
-            header('Location: mandash.php');
-        } elseif ($user['user_level_id'] == 4) {
-            header('Location: crewdashboard.php');
-        } else
-        exit();
-    } else {
-        // Invalid credentials
-        echo "<script>alert('Incorrect username or password.'); window.location.href = 'landing.php';</script>";
-        exit();
-    }
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+
+// Inventory data
+$inventory = $conn->query("SELECT * FROM inventory");
+
+// Stats
+$totalItems = $conn->query("SELECT COUNT(*) AS count FROM inventory")->fetch_assoc()['count'];
+$lowStock = $conn->query("SELECT COUNT(*) AS count FROM inventory WHERE status = 'Low'")->fetch_assoc()['count'];
+$outOfStock = $conn->query("SELECT COUNT(*) AS count FROM inventory WHERE status = 'Out of Stock'")->fetch_assoc()['count'];
+$pendingRequests = $conn->query("SELECT COUNT(*) AS count FROM requests WHERE status = 'Pending'")->fetch_assoc()['count'];
 ?>
 
 <!DOCTYPE html>
@@ -49,55 +32,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-  <header>
-    <h1>Crew Dashboard</h1>
-  </header>
+<header>
+  <h1>Crew Dashboard</h1>
+</header>
 
-  <div class="container">
-    <aside class="sidebar">
-      <nav>
-        <ul>
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Crew View</a></li>
-            <li><a href="#">Report</a></li>
-            <li><a href="logout.php">Logout</a></li>
-        </ul>
-        </ul>
-      </nav>
-    </aside>
-    <div class="crew-view" id="crewView">
-      <h2>Crew Member Details</h2>
-    <main class="main-content">
-      <h2>Crew Members</h2>
-      <div class="crew-list">
-        <div class="crew-card">
-          <h3>John allen</h3>
-          <p>Crew staff</p>
-          <p>Experience: 10 years</p>
-          <button class="view-btn">View Profile</button>
-        </div>
-        <div class="crew-card">
-          <h3>RM santos</h3>
-          <p>manager</p>
-          <p>Experience: 5 years</p>
-          <button class="view-btn">View Profile</button>
-        </div>
-        <div class="crew-card">
-          <h3>Johnric</h3>
-          <p>Crew staff</p>
-          <p>Experience: 7 years</p>
-          <a href="johnric.html" class="view-btn">View Profile</a>
+<div class="container">
+  <aside class="sidebar">
+    <nav>
+      <ul>
+        <li><a href="crewdashboard.php">Dashboard</a></li>
+        <li><a href="crewview.php">Crew View</a></li>
+        <li><a href="report.html">Report</a></li>
+      </ul>
+    </nav>
+  </aside>
 
-        </div>
-        <div class="crew-card">
-            <h3>Nel Crimson</h3>
-            <p>Onwer</p>
-            <p>Experience: 7 years</p>
-            <button class="view-btn">View Profile</button>
-          </div>
-      </div>
-    </main>
+  <div class="main">
+    <div class="cards">
+      <div class="card card-small"><h3>Total Items</h3><p><?php echo $totalItems; ?></p></div>
+      <div class="card card-small"><h3>Low Stock</h3><p><?php echo $lowStock; ?></p></div>
+      <div class="card card-small"><h3>Out of Stock</h3><p><?php echo $outOfStock; ?></p></div>
+      <div class="card card-small"><h3>Pending Requests</h3><p><?php echo $pendingRequests; ?></p></div>
+    </div>
+
+    <div class="card">
+      <h2>Live Inventory</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Category</th>
+            <th>Quantity</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php while($row = $inventory->fetch_assoc()): ?>
+          <tr>
+            <td><?php echo $row['item_name']; ?></td>
+            <td><?php echo $row['category']; ?></td>
+            <td><?php echo $row['quantity']; ?></td>
+            <td class="<?php
+              if ($row['status'] == 'OK') echo 'status-ok';
+              elseif ($row['status'] == 'Low') echo 'status-low';
+              else echo 'status-out';
+            ?>"><?php echo $row['status']; ?></td>
+          </tr>
+          <?php endwhile; ?>
+        </tbody>
+      </table>
+    </div>
   </div>
+</div>
 
 </body>
 </html>
