@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $names = $_POST['product_name'];
     $prices = $_POST['unit_price'];
     $quantities = $_POST['quantity'];
-    $categories = trim('category')[$i];
+    $categories = $_POST['category_id']; // Assuming it's also an array
 
     $successCount = 0;
     $errorCount = 0;
@@ -15,22 +15,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name = trim($names[$i]);
         $price = $prices[$i];
         $qty = $quantities[$i];
-        $category = trim($categories[$i]);
+        $category_id = $categories[$i];
 
-        if (!empty($name) && is_numeric($price) && is_numeric($qty)) {
+        if (!empty($name) && is_numeric($price) && is_numeric($qty) && is_numeric($category_id)) {
             try {
-                $stmt = $pdo->prepare("INSERT INTO product (category, product_name, unit_price, quantity) VALUES (?, ?, ?, ?)");
-                $stmt->execute([$categories, $name, $price, $qty]);
+                $stmt = $pdo->prepare("INSERT INTO product (category_id, product_name, unit_price, quantity) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$category_id, $name, $price, $qty]);
                 $successCount++;
             } catch (PDOException $e) {
                 $errorCount++;
+                error_log("DB error at index $i: " . $e->getMessage());
             }
         } else {
             $errorCount++;
+            error_log("Invalid input at index $i: name=$name, price=$price, qty=$qty, category_id=$category_id");
         }
     }
 
     echo "<script>alert('Added $successCount items. $errorCount errors.'); window.history.back();</script>";
 }
 ?>
-

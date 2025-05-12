@@ -135,10 +135,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <option value="3">Manager</option>
         <option value="4">Crew</option>
     </select>
-    <select name="employment_status" required>
-    <option value="Full Time">Full Time</option>
-    <option value="Part Time">Part Time</option>
-</select>
+    <label for="employment_status">Employment Status:</label>
+    <select name="employment_status" id="employment_status" required>
+        <option value="active">Active</option>
+        <option value="terminated">Terminated</option>
+        <option value="on leave">On Leave</option>
+    </select>
+
     <button type="submit">Create User</button>
     <?php if (isset($message)): ?>
         <div class="message"><?= htmlspecialchars($message) ?></div>

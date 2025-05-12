@@ -289,16 +289,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			<div class="modal-content">
 					<span class="close" id="closeModalBtn">&times;</span>
 					<h2>My Orders</h2>
-					<p>Here you can view and manage your orders.</p>
+					<p>Here you can view and manage your orders.</p><br>
 					
+					<!-- Orders Table -->
+					<div id="ordersContent">
+					<?php include 'fetchord.php'; ?> <!-- Shows current orders -->
+					</div><br>
+
 					<!-- Add Order Button -->
 					<button id="addOrderBtn" style="margin-bottom: 15px; padding: 8px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
 					+ Add Order
 					</button>
-					<!-- Orders Table -->
-					<div id="ordersContent">
-					<?php include 'fetchord.php'; ?> <!-- Shows current orders -->
-					</div>
+
+					<!-- Mark All Orders as Completed Button -->
+					<form method="POST" action="compord.php" onsubmit="return confirm('Are you sure you want to mark all orders as completed?');">
+					<input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
+						<button type="submit" style="color: red;">Mark All Orders as Completed</button>
+					</form>
+					<?php if (isset($_GET['status']) && $_GET['status'] == 'updated'): ?>
+						<p style="color: green;">All orders have been marked as completed.</p>
+					<?php endif; ?>
 			</div>
 		</div>
 
@@ -487,18 +497,29 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
     </div>
 </li>
 
-                <li class="collapsible-box">
-                    <div class="box-header">
-					    <i class='bx bxs-dollar-circle' ></i>
-                        <span class="text">
-                            <h3>₱75230</h3>
-                            <p>Total Transactions</p>
-                        </span>
-                    </div>
-                    <div class="box-content">
-			            <p>More info about Total Transactions...</p>
-		            </div>
-				</li>
+					<li class="collapsible-box">
+						<div class="box-header">
+							<i class='bx bxs-dollar-circle'></i>
+							<span class="text">
+								<h3>
+									<?php
+									require 'db.php';
+									$stmt = $pdo->query("
+										SELECT SUM(t.quantity * p.unit_price) AS total_value
+										FROM transactions t
+										JOIN product p ON t.product_id = p.product_id
+									");
+									$total = $stmt->fetchColumn();
+									echo "₱" . number_format($total ?? 0, 2);
+									?>
+								</h3>
+								<p>Total Transactions</p>
+							</span>
+						</div>
+						<div class="box-content">
+							<p>More info about Total Transactions...</p>
+						</div>
+					</li>
 			</ul>
 <!--graphs-->
             <div class="graphBox">
@@ -510,7 +531,14 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
     </div>
 </div>
 
-
+			<?php
+			try {
+				$stmt = $pdo->query("SELECT fname, lname, employment_status, user_level_id FROM users ORDER BY created_at DESC");
+				$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			} catch (PDOException $e) {
+				die("Error fetching users: " . $e->getMessage());
+			}
+			?>
 			<div class="table-data">
 				<div class="employee-list" id="team">
 					<div class="head">
@@ -527,47 +555,25 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Wick</p>
-								</td>
-								<td>Full Time</td>
-								<td><span class="status manager">Manager</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="assets/nel.jpg">
-									<p>Nel Garin</p>
-								</td>
-								<td>Full Time</td>
-								<td><span class="status employee">Employee</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="assets/RM.jpg">
-									<p>RM Santos</p>
-								</td>
-								<td>Full Time</td>
-								<td><span class="status employee">Employee</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="assets/JArmonio.jpg">
-									<p>Janjan Armonio</p>
-								</td>
-								<td>Full Time</td>
-								<td><span class="status employee">Employee</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="assets/mirror shot.jpg">
-									<p>Allen</p>
-								</td>
-								<td>Part TIme</td>
-								<td><span class="status employee">Employee</span></td>
-							</tr>
-						</tbody>
+                <?php if ($users): ?>
+                    <?php foreach ($users as $user): ?>
+                        <tr>
+                            <td>
+                                <img src="assets/default-user.png" alt="User Image" />
+                                <p><?= htmlspecialchars($user['fname']) ?></p>
+                            </td>
+                            <td><?= htmlspecialchars($user['employment_status']) ?></td>
+                            <td>
+                                <span class="status <?= strtolower($user['user_level_id']) ?>">
+                                    <?= htmlspecialchars($user['user_level_id']) ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr><td colspan="3">No users found.</td></tr>
+                <?php endif; ?>
+            </tbody>
 					</table>
 				</div>
 				<div class="activity-log">
@@ -596,29 +602,31 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
                     <button id="closeAddItemSidebar">&times;</button>
                 </div>
                 <form id="multiItemForm" method="POST" action="addprod.php">
-                    <div id="itemContainer">
-                        <div class="item-entry">
-                            <input type="text" name="product_name[]" placeholder="Item name" required>
-                            <input type="number" name="unit_price[]" placeholder="Unit price" required>
-                            <input type="number" name="quantity[]" placeholder="Quantity" required>
-                            <button type="button" class="removeItemBtn">Remove</button>
-                        </div>
-						<!-- Category Dropdown -->
-						<select name="category[]" required>
-						<option value="">Select Category</option>
-						<?php
-						// Fetch categories from the product_categories table
-						$stmt = $pdo->query("SELECT category_name FROM product_categories");
-						while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-							echo "<option value=\"" . htmlspecialchars($row['category_name']) . "\">" . htmlspecialchars($row['category_name']) . "</option>";
-						}
-						?>
-						</select>
-                    </div>
-						<button type="button" id="addItemBtn">Add Another Item</button>
-						<br><br>
-						<button type="submit">Submit All Items</button>
-                </form>
+					<div id="itemContainer">
+						<div class="item-entry">
+							<input type="text" name="product_name[]" placeholder="Item name" required>
+							<input type="number" name="unit_price[]" placeholder="Unit price" required>
+							<input type="number" name="quantity[]" placeholder="Quantity" required>
+						<!-- Category Dropdown (inside item-entry div) -->
+							<select name="category_id[]" required>
+								<option value="">Select Category</option>
+								<?php
+								require 'db.php';
+								// Fetch categories from the product_categories table
+								$stmt = $pdo->query("SELECT category_id, category_name FROM product_categories");
+								while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+									echo "<option value=\"" . htmlspecialchars($row['category_id']) . "\">" . htmlspecialchars($row['category_name']) . "</option>";
+								}
+								?>
+							</select>
+							<button type="button" class="removeItemBtn">Remove</button>
+						</div>
+					</div>
+					<button type="button" id="addItemBtn">Add Another Item</button>
+					<br><br>
+					<button type="submit">Submit All Items</button>
+				</form>
+
             </div>
         </div>
 		</main>
@@ -710,8 +718,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <input type="text" name="product_name[]" placeholder="Item name" required>
             <input type="number" name="unit_price[]" placeholder="Unit price" required>
             <input type="number" name="quantity[]" placeholder="Quantity" required>
-            <button type="button" class="removeItemBtn">Remove</button>
-        `;
+            <button type="button" class="removeItemBtn">Remove</button>`;
         container.appendChild(entry);
     });
 

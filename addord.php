@@ -10,88 +10,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category_ids = $_POST['category_id'] ?? [];
     $supplier_ids = $_POST['supplier_id'] ?? [];
 
-
-
     if (!$user_id) {
         echo "User not logged in.";
         exit;
     }
 
-    for ($i = 0; $i < count($product_ids); $i++) {
-        $product_id = $product_ids[$i];
-        $quantity = $quantities[$i];
-        $category = $categories[$i];
+    $pdo->beginTransaction();
 
-        // Fetch product details from DB
-        $stmt = $pdo->prepare("SELECT product_name, unit_price FROM product WHERE product_id = :product_id");
-        $stmt->execute([':product_id' => $product_id]);
-        $product = $stmt->fetch();
+    try {
+        for ($i = 0; $i < count($product_ids); $i++) {
+            $product_id = $product_ids[$i];
+            $quantity = $quantities[$i];
+            $category_id = $category_ids[$i];
+            $supplier_id = $supplier_ids[$i];
 
-        if (!$product) {
-            echo "Product not found for ID: $product_id";
-            continue;
+            // Get product price
+            $stmt = $pdo->prepare("SELECT unit_price FROM product WHERE product_id = :product_id");
+            $stmt->execute([':product_id' => $product_id]);
+            $product = $stmt->fetch();
+
+            if (!$product) {
+                throw new Exception("Product not found for ID: $product_id");
+            }
+
+            $total_price = $product['unit_price'] * $quantity;
+            $order_status = 'pending';
+
+            // Insert into orders
+            $sql = "INSERT INTO orders (
+                product_id, category_id, supplier_id,
+                quantity_ordered, total_price, order_status, order_date
+            ) VALUES (
+                :product_id, :category_id, :supplier_id,
+                :quantity_ordered, :total_price, :order_status, NOW()
+            )";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':product_id' => $product_id,
+                ':category_id' => $category_id,
+                ':supplier_id' => $supplier_id,
+                ':quantity_ordered' => $quantity,
+                ':total_price' => $total_price,
+                ':order_status' => $order_status
+            ]);
+
+            // Insert into transactions
+            $transaction_sql = "INSERT INTO transactions 
+                (product_id, supplier_id, quantity, transaction_type, transaction_date, order_agent) 
+                VALUES 
+                (:product_id, :supplier_id, :quantity, :transaction_type, NOW(), :order_agent)";
+
+            $transaction_stmt = $pdo->prepare($transaction_sql);
+            $transaction_stmt->execute([
+                ':product_id' => $product_id,
+                ':supplier_id' => $supplier_id,
+                ':quantity' => $quantity,
+                ':transaction_type' => 'order',
+                ':order_agent' => $user_id
+            ]);
         }
 
-        $total_price = $product['unit_price'] * $quantity;
-        $order_status = 'pending';
+        $pdo->commit();
+        header("Location: mandash.php?order=added");
+        exit;
 
-        $sql = "INSERT INTO orders (
-            product_name,
-            category,
-            supplier_name,
-            quantity_ordered,
-            total_price,
-            order_status,
-            order_date
-        ) VALUES (
-            :product_name,
-            :category,
-            :supplier_name,
-            :quantity_ordered,
-            :total_price,
-            :order_status,
-            NOW()
-        )";
-
-$stmt = $pdo->prepare($sql);
-$stmt->execute([
-    ':product_name' => $product['product_name'],
-    ':category' => $category,
-    ':supplier_name' => $product['supplier_name'],
-    ':quantity_ordered' => $quantity,
-    ':total_price' => $total_price,
-    ':order_status' => $order_status
-]);
-$transaction_sql = "INSERT INTO transactions 
-    (product_id, supplier_name, quantity, transaction_type, transaction_date, order_agent) 
-    VALUES 
-    (:product_id, :supplier_name, :quantity, :transaction_type, NOW(), :order_agent)";
-
-$transaction_stmt = $pdo->prepare($transaction_sql);
-$transaction_stmt->execute([
-    ':product_id' => $product_id,
-    ':supplier_name' => $product['supplier_name'],
-    ':quantity' => $quantity,
-    ':transaction_type' => 'order', // or 'purchase' or whatever term fits
-    ':order_agent' => $user_id // or the username if available
-]);
-
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        echo "Error: " . $e->getMessage();
     }
-    $pdo->beginTransaction();
-try {
-    // Insert into orders
-    // Insert into transactions
-    $pdo->commit();
-} catch (Exception $e) {
-    $pdo->rollBack();
-    echo "Error: " . $e->getMessage();
-}
-
-
-    header("Location: mandash.php?order=added");
-    exit;
 }
 ?>
+
 
 
                 <form id="multiItemForm" method="POST" >
