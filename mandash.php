@@ -193,13 +193,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
+#notificationsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
 
+.notification-item:hover {
+    background-color: #f0f0f0;
+}
 
+.activity-log-listt {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.log-list {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
 </style>
 
-
-    </styl>
 </head>
 <body>
 
@@ -238,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			<li>
 				<a href="#"id="openReportModalBtn">
 					<i class='bx bxs-message-dots' ></i>
-					<span class="text">Reports</span>
+					<span class="text">Generate Reports</span>
 				</a>
 			</li>
 			<!-- Modal Structure for Report Submission -->
@@ -332,22 +353,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					modal.style.display = "none";
 				}
 				};
-				//#<script>
-				//document.querySelectorAll(".viewOrderBtn").forEach(button => {
-				///button.addEventListener("click", function () {
-					// Fill modal fields
-				//   document.getElementById("modalOrderId").textContent = this.dataset.orderId;
-				//   document.getElementById("modalProductName").textContent = this.dataset.productName;
-				//   document.getElementById("modalQuantity").textContent = this.dataset.quantity;
-				//   document.getElementById("modalTotal").textContent = this.dataset.total;
-				//  document.getElementById("modalStatus").textContent = this.dataset.status;
-				//
-					// Show the modal
-				// document.getElementById("myModal").style.display = "block";
-				// });
-				//});
 				</script>
-					</button>
+			</button>
 				</div>
 				</div>
 
@@ -399,8 +406,6 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 </script>
 
 			</form>
-			<input type="checkbox" id="switch-mode" hidden>
-			<label for="switch-mode" class="switch-mode"></label>
 			<!-- Notification Bell -->
 			<a href="#" class="notification" id="notifBell" style="position: relative;">
 			<i class='bx bxs-bell'></i>
@@ -415,8 +420,7 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 			</ul>
 			</div>
 
-
-
+			<!--bgmc logo-->
 			<a href="https://www.facebook.com/profile.php?id=100076371194984" class="profile">
 				<img src="assets/bgmc-modified.png">
 			</a>
@@ -458,7 +462,14 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
                     <div class="box-header">
 					    <i class='bx bxs-package' ></i>
 					    <span class="text">
-						<h3>80</h3>
+							<?php
+							include 'db.php';
+
+							$stmt = $pdo->query("SELECT COUNT(*) as total FROM orders");
+							$row = $stmt->fetch();
+							$totalStocks = $row['total'];
+							?>
+							<h3><?= $totalStocks ?></h3>
 						<p>Stocks</p>
 					    </span>
                     </div>
@@ -542,7 +553,7 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 			<div class="table-data">
 				<div class="employee-list" id="team">
 					<div class="head">
-						<h3>Employee List</h3>
+						<h3>Accounts List</h3>
 						<i class='bx bx-search' ></i>
 						<i class='bx bx-filter' ></i>
 					</div>
@@ -555,25 +566,25 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 							</tr>
 						</thead>
 						<tbody>
-                <?php if ($users): ?>
-                    <?php foreach ($users as $user): ?>
-                        <tr>
-                            <td>
-                                <img src="assets/default-user.png" alt="User Image" />
-                                <p><?= htmlspecialchars($user['fname']) ?></p>
-                            </td>
-                            <td><?= htmlspecialchars($user['employment_status']) ?></td>
-                            <td>
-                                <span class="status <?= strtolower($user['user_level_id']) ?>">
-                                    <?= htmlspecialchars($user['user_level_id']) ?>
-                                </span>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr><td colspan="3">No users found.</td></tr>
-                <?php endif; ?>
-            </tbody>
+							<?php if ($users): ?>
+								<?php foreach ($users as $user): ?>
+									<tr>
+										<td>
+											<img src="assets/default-user.png" alt="User Image" />
+											<p><?= htmlspecialchars($user['fname']) ?></p>
+										</td>
+										<td><?= htmlspecialchars($user['employment_status']) ?></td>
+										<td>
+											<span class="status <?= strtolower($user['user_level_id']) ?>">
+												<?= htmlspecialchars($user['user_level_id']) ?>
+											</span>
+										</td>
+									</tr>
+								<?php endforeach; ?>
+							<?php else: ?>
+								<tr><td colspan="3">No users found.</td></tr>
+							<?php endif; ?>
+            			</tbody>
 					</table>
 				</div>
 				<div class="activity-log">
@@ -585,17 +596,94 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 							<p>Add Items</p>
 							<button class="add-item-button" id="add-item-button">Add</button>
 						</li>
-						<li class="log-list">
-							<p>Edit Items</p>
-							<button class="edit-item-button" id="edit-item-button">Edit</button>
-						</li>
-						<li class="log-list">
-							<p>Archive Items</p>
-							<button class="archive-item-button" id="archive-item-button">Archive</button>
-						</li>
 					</ul>
+					<!-- Chart Container -->
+    <div id="curve_chart" style="width: 100%; height: 500px; margin-top: 20px;"></div>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+    // Fetch data from the backend
+    fetch('fetchitemdata.php')
+      .then(response => response.json())
+      .then(chartData => {
+        // Convert JSON data to Google Charts format
+        const data = google.visualization.arrayToDataTable(chartData);
+
+        // Chart options
+        const options = {
+          title: 'Stock and Product Acquisition Data', 
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        // Draw the chart
+        const chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        chart.draw(data, options);
+      })
+      .catch(error => console.error('Error fetching chart data:', error));
+  }
+</script>
 				</div>
-			</div>
+				<ul id="notificationsList">
+    <!-- Notifications will be dynamically loaded here -->
+				</ul>
+
+				<div class="activity-logg">
+					<div class="head">
+						<h3>Reports Management</h3>
+					</div>
+					<ul class="activity-log-listt" id="reportsList">
+						<!-- Reports will be dynamically loaded here -->
+					</ul>
+					<script>
+    // Fetch notifications and display them in the notifications list
+    function fetchNotifications() {
+        fetch('fetchnotif.php') // Fetch notifications from the backend
+            .then(response => response.json())
+            .then(notifications => {
+                const notificationsList = document.getElementById('notificationsList');
+                notificationsList.innerHTML = ''; // Clear existing notifications
+
+                notifications.forEach(notification => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('notification-item');
+                    listItem.setAttribute('data-id', notification.id); // Add notification ID
+                    listItem.innerHTML = `
+                        <p>${notification.message}</p>
+                        <small>${notification.created_at}</small>
+                    `;
+                    notificationsList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('Error fetching notifications:', error));
+    }
+
+    // Handle click events on notifications
+    document.getElementById('notificationsList').addEventListener('click', (event) => {
+        const notificationItem = event.target.closest('.notification-item');
+        if (notificationItem) {
+            const notificationId = notificationItem.getAttribute('data-id');
+
+            // Fetch the report for the clicked notification
+            fetch(`fetchreport.php?id=${notificationId}`)
+                .then(response => response.text())
+                .then(reportHtml => {
+                    const reportsList = document.getElementById('reportsList');
+                    reportsList.innerHTML = reportHtml; // Display the fetched report
+                })
+                .catch(error => console.error('Error fetching report:', error));
+        }
+    });
+
+    // Fetch notifications when the page loads
+    fetchNotifications();
+</script>
+				</div>
+				</div>
+			
             <div id="addItemSidebar" class="activity-sidebar">
                 <div class="sidebar-header">
                     <h3>Add Items into Inventory</h3>
@@ -642,7 +730,7 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 
 
     <!-- JS -->
-    <!--<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>-->
+   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
 	<script src="scripts/scripts.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
@@ -894,8 +982,90 @@ setInterval(() => {
   }
 }, 5000);
 
+// Fetch data from fetchnotif.php
+fetch('fetchnotif.php')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+
+        // Display notifications
+        data.notifications.forEach(notification => {
+            console.log(`Notification: ${notification.message} at ${notification.created_at}`);
+        });
+
+        // Display recent orders
+        data.recent_orders.forEach(order => {
+            console.log(`Order ID: ${order.order_id}, Product ID: ${order.product_id}, Quantity: ${order.quantity_ordered}`);
+        });
+
+        // Display inventory updates
+        data.inventory_updates.forEach(update => {
+            console.log(`Product ID: ${update.product_id}, Quantity: ${update.quantity}, Last Updated: ${update.last_updated}`);
+        });
+    })
+    .catch(error => console.error('Error fetching data:', error));
 
 
+	document.getElementById('notificationsButton').addEventListener('click', () => {
+    fetch('fetchnotif.php')
+        .then(response => response.json())
+        .then(data => {
+            const notifList = document.getElementById('notifList');
+            notifList.innerHTML = ''; // Clear existing notifications
+
+            data.notifications.forEach(notification => {
+                const listItem = document.createElement('li');
+                listItem.textContent = notification.message;
+                listItem.setAttribute('data-id', notification.id); // Assuming each notification has an 'id'
+                listItem.classList.add('notification-item');
+                notificationsList.appendChild(listItem);
+            });
+
+            // Show the modal
+            document.getElementById('notificationsModal').style.display = 'block';
+        })
+        .catch(error => console.error('Error fetching notifications:', error));
+});
+document.getElementById('notifList').addEventListener('click', (event) => {
+    if (event.target.classList.contains('notification-item')) {
+        const notificationId = event.target.getAttribute('data-id');
+
+        // Fetch the report for the clicked notification
+        fetch(`fetchreport.php?id=${notificationId}`)
+            .then(response => response.text())
+            .then(reportHtml => {
+                // Display the report below the "Items Management" section
+                const itemsManagementSection = document.getElementById('itemsManagement');
+                const reportContainer = document.getElementById('reportContainer') || document.createElement('div');
+                reportContainer.id = 'reportContainer';
+                reportContainer.innerHTML = reportHtml;
+                itemsManagementSection.appendChild(reportContainer);
+            })
+            .catch(error => console.error('Error fetching report:', error));
+    }
+});
+// Add event listener to the notification bell
+document.getElementById('notifiBell').addEventListener('click', () => {
+    // Fetch reports from the backend
+    fetch('fetchnotif.php')
+        .then(response => response.json())
+        .then(reports => {
+            const reportsList = document.getElementById('reportsList');
+            reportsList.innerHTML = ''; // Clear existing reports
+
+            // Populate the reports list
+            reports.forEach(report => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('log-list');
+                listItem.innerHTML = `
+                    <p><strong>${report.title}</strong></p>
+                    <p>Created At: ${report.created_at}</p>
+                `;
+                reportsList.appendChild(listItem);
+            });
+        })
+        .catch(error => console.error('Error fetching reports:', error));
+});
 </script>
 
   

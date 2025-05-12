@@ -12,7 +12,7 @@ $superadminExists = $stmt->fetchColumn() > 0;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>iNVAX</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/land.css">
+    <link rel="stylesheet" href="land.css">
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="assets/Untitled__1_-removebg-preview.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
@@ -124,64 +124,63 @@ $superadminExists = $stmt->fetchColumn() > 0;
         <h2>Privacy Policy</h2>
         <p>Welcome to Invexa! These Terms of Service outline the rules and regulations for using our restaurant inventory management platform. By accessing or using our service, you agree to comply with these terms. If you do not agree, please do not use our service."
 <br>
-** User Accounts & Responsibilities**
+<strong> User Accounts & Responsibilities</strong>
 <br>
 Users must provide accurate information when signing up.
 Responsibilities for keeping account credentials secure.
 What happens if someone misuses their account?
-<br>Example:
+<br><sub>Example:
 
-"Users are responsible for maintaining the security of their accounts. Any activity conducted under their account will be their responsibility. If unauthorized access occurs, users must notify us immediately."
+"Users are responsible for maintaining the security of their accounts. Any activity conducted under their account will be their responsibility. If unauthorized access occurs, users must notify us immediately."</sub>
 <br>
-<strong>** Acceptable Use Policy**</strong>
+<strong> Acceptable Usage Policy</strong>
 <br>
 Users cannot misuse the system (e.g., hacking, fraud, spam).
 No illegal or prohibited activities.
 Prohibited content (e.g., harmful, misleading, or offensive materials).
-<br>Example:
+<br><sub>Example:
 
-"You agree not to misuse Invexa’s services, including engaging in fraudulent activities, hacking, distributing malware, or violating any laws."
+"You agree not to misuse Invexa’s services, including engaging in fraudulent activities, hacking, distributing malware, or violating any laws."</sub>
 <br>
-** Payment & Subscription (If Applicable)**
+<strong> Payment & Subscription (If Applicable)</strong>
 <br>
 Subscription details (monthly/yearly).
 Refund policies and cancellations.
 Late payments or failed transactions.
-<br>Example:
+<br><sub>Example:
 "Payments are billed on a recurring basis. Users may cancel at any time, but no refunds will be provided for the remaining subscription period."
+</sub><br>
+data 
 <br>
-** Data Privacy & Security**
-<br>
-What data Invexa collects and how it is used.
+<strong>What data Invexa collects and how it is used.</strong>
 How user data is protected.
 Reference to the Privacy Policy.
 <br>Example:
 
-"Invexa collects and processes personal and business data to provide better inventory management. We do not sell user data to third parties. For more details, please see our Privacy Policy."
+<sub>"Invexa collects and processes personal and business data to provide better inventory management. We do not sell user data to third parties. For more details, please see our Privacy Policy."</sub>
 <br>
-**Service Availability & Downtime**
+<strong>Service Availability & Downtime</strong>
 <br>
 Invexa does not guarantee 100% uptime.
 Explanation of planned maintenance or system outages.
-<br>Example:
+<br><sub>Example:
 
 "We strive to keep Invexa available 24/7. However, occasional downtime may occur due to maintenance, technical issues, or factors beyond our control."
-<br>
-**Intellectual Property**
+<br></sub>
+<strong>Intellectual Property</strong>
 <br>
 Clarify that Invexa owns the software, branding, and content.
 Users cannot copy, resell, or modify the platform.
-<br>Example:
+<br><sub>Example:
 
-"All trademarks, service marks, and intellectual property on Invexa are owned by us. You may not copy, distribute, or modify any part of our platform without permission."
-<br>
-**Limitation of Liability**
+"All trademarks, service marks, and intellectual property on Invexa are owned by us. You may not copy, distribute, or modify any part of our platform without permission."</sub>
+<strong>Limitation of Liability</strong>
 <br>
 Invexa is not responsible for business losses, errors, or financial damages caused by using the service.
-<br>Example:
+<br><sub>Example:
 
 "Invexa is provided 'as is' without any warranties. We are not liable for any business losses, data inaccuracies, or service disruptions."
-<br>
+<br></sub>
 **Termination of Accounts**
 <br>
 Conditions under which Invexa can suspend or terminate accounts.

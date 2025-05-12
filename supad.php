@@ -123,8 +123,7 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll(P
         ? htmlspecialchars($_SESSION['username']) 
         : 'Unknown' ?>
   </strong> (Superadmin)
-</p>
-    <a href="#logs">User Logs</a>
+</p>    
     <a href="adduse.php">Manage Users</a>
     <a href="logout.php">Logout</a>
 </div>

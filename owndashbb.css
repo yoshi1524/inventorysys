@@ -21,7 +21,7 @@ li {
 	--lato: 'Lato', sans-serif;
 
 	--light: #F9F9F9;
-	--blue: #3C91E6;
+	--blue: #01ad3a;
 	--light-blue: #CFE8FF;
 	--grey: #eee;
 	--dark-grey: #AAAAAA;
@@ -480,6 +480,7 @@ body {
 	color: var(--light);
 	border-radius: 20px;
 	font-weight: 700;
+	color: #060714;
 }
 #content main .table-data .employee-list table tr td .status.manager {
 	background: var(--blue);
@@ -491,10 +492,10 @@ body {
 	background: var(--orange);
 }
 
-
 #content main .table-data .activity-log {
 	flex-grow: 1;
 	flex-basis: 300px;
+	height: 10%;
 }
 
 #content main .table-data .activity-log .activity-log-list {
@@ -510,8 +511,6 @@ body {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-
-	
 }
 #content main .table-data .activity-log .log-list li:hover {
 	cursor: pointer;
@@ -527,9 +526,9 @@ body {
     color: white;
     margin-top: 10px;
     font-size: 0.8rem;
-    background-color: #171717;
+    background-color: #01ad3a;
     border-radius: 50px;
-    border: 1px solid #171717;
+    border: 1px solid #ffffff;
     transition: 0.3s ease;
 	cursor: pointer;
 }
@@ -572,7 +571,17 @@ body {
 	cursor: pointer;
 }
 
-
+#content main .table-data .activity-logg .activity-log-listt li {
+	width: 100%;
+	height: 80px;
+	margin-bottom: 16px;
+	background: var(--grey);
+	border-radius: 10px;
+	padding: 14px 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
 
 
 /* MAIN */

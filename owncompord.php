@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Success message
         echo "<script>
                 alert('Order has been marked as completed.');
-                window.location.href='mandash.php';
+                window.location.href='owndash.php';
               </script>";
         exit;
     } catch (Exception $e) {
