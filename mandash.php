@@ -66,6 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<!-- My CSS -->
 	<link rel="stylesheet" href="owndashbb.css">
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 
 	<title>Manager Hub</title>
     <style>
@@ -158,7 +160,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 .notif-dropdown ul li:last-child {
   border-bottom: none;
 }
-</style>
+
+.modal {
+  display: none; /* Hides the modal initially */
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4); /* Dim background */
+}
+
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 20px;
+  width: 80%;
+  border-radius: 8px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+
 
 </style>
 
@@ -241,34 +277,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		</ul>
 		<ul class="side-menu">
 			<!-- Sidebar Button -->
-<li>
-  <a href="#" id="openModalBtn">
-    <i class='bx bxs-cog'></i>
-    <span class="text">My Orders</span>
-  </a>
-</li>
+	<li>
+		<a href="#" id="openModalBtn">
+			<i class='bx bxs-cog'></i>
+			<span class="text">My Orders</span>
+		</a>
+		</li>
 
-<!-- Modal Structure -->
-<div id="myModal" class="modal">
-  <div class="modal-content">
-    <span class="close" id="closeModalBtn">&times;</span>
-    <h2>My Orders</h2>
-    <p>Here you can view and manage your orders.</p>
-	<button id="addOrderBtn" style="margin-bottom: 15px; padding: 8px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
-      + Add Order
-	  <script>
-document.getElementById("addOrderBtn").onclick = function() {
-  window.location.href = "add_order.php";
-};
-</script>
+		<!-- Modal Structure -->
+		<div id="myModal" class="modal">
+			<div class="modal-content">
+					<span class="close" id="closeModalBtn">&times;</span>
+					<h2>My Orders</h2>
+					<p>Here you can view and manage your orders.</p>
+					
+					<!-- Add Order Button -->
+					<button id="addOrderBtn" style="margin-bottom: 15px; padding: 8px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+					+ Add Order
+					</button>
+					<!-- Orders Table -->
+					<div id="ordersContent">
+					<?php include 'fetchord.php'; ?> <!-- Shows current orders -->
+					</div>
+			</div>
+		</div>
 
-    </button>
-	<div id="ordersContent">
-      <?php include 'fetchord.php'; ?> <!-- Call PHP file here -->
-    </div>
-    <!-- Add content for your modal here -->
-  </div>
-</div>
+				<!-- JavaScript to handle Add Order button -->
+				<script>
+				document.getElementById("addOrderBtn").onclick = function () {
+				window.location.href = "addord.php"; // This should lead to your order form
+				};
+				document.getElementById("openModalBtn").onclick = function () {
+				document.getElementById("myModal").style.display = "block";
+				};
+
+				document.getElementById("closeModalBtn").onclick = function () {
+				document.getElementById("myModal").style.display = "none";
+				};
+
+				// Optional: Close modal when clicking outside the modal content
+				window.onclick = function(event) {
+				const modal = document.getElementById("myModal");
+				if (event.target == modal) {
+					modal.style.display = "none";
+				}
+				};
+				//#<script>
+				//document.querySelectorAll(".viewOrderBtn").forEach(button => {
+				///button.addEventListener("click", function () {
+					// Fill modal fields
+				//   document.getElementById("modalOrderId").textContent = this.dataset.orderId;
+				//   document.getElementById("modalProductName").textContent = this.dataset.productName;
+				//   document.getElementById("modalQuantity").textContent = this.dataset.quantity;
+				//   document.getElementById("modalTotal").textContent = this.dataset.total;
+				//  document.getElementById("modalStatus").textContent = this.dataset.status;
+				//
+					// Show the modal
+				// document.getElementById("myModal").style.display = "block";
+				// });
+				//});
+				</script>
+					</button>
+				</div>
+				</div>
 
 			<li>
 				<a href="logout.php" class="logout">
@@ -336,7 +407,7 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 
 
 
-			<a href="#" class="profile">
+			<a href="https://www.facebook.com/profile.php?id=100076371194984" class="profile">
 				<img src="assets/bgmc-modified.png">
 			</a>
 		</nav>
@@ -429,15 +500,16 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 		            </div>
 				</li>
 			</ul>
-
+<!--graphs-->
             <div class="graphBox">
-                <div class="box">
-                    <canvas id="myChart"></canvas>
-                </div>
-                <div class="box">
-                    <canvas id="myChart2"></canvas>
-                </div>
-               </div>
+    <div class="box">
+        <div id="chart1" style="width: 200%; height: 400px;"></div>
+    </div>
+    <div class="box">
+        <div id="chart2" style="width: 100%; height: 400px;"></div>
+    </div>
+</div>
+
 
 			<div class="table-data">
 				<div class="employee-list" id="team">
@@ -552,11 +624,17 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 		</main>
 		<!-- MAIN -->
 	</section>
+
+
+	<div id="notification" style="display:none; background: #4caf50; color: white; padding: 12px; border-radius: 5px; margin: 10px 0;">
+  ✅ Order Successful!
+</div>
+
 	<!-- CONTENT -->
 
 
     <!-- JS -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>-->
 	<script src="scripts/scripts.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
@@ -718,10 +796,84 @@ function loadNotifications() {
 
 setInterval(loadNotifications, 5000);
 loadNotifications();
+//for orders notif
+  document.addEventListener("DOMContentLoaded", function() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("order") === "success") {
+      const note = document.getElementById("notification");
+      if (note) {
+        note.style.display = "block";
+        setTimeout(() => note.style.display = "none", 3000);
+      }
+    }
+  });
+
+ type="text/javascript">
+  google.charts.load("current", { packages: ["corechart"] });
+  google.charts.setOnLoadCallback(drawCharts);
+
+  function drawCharts() {
+    // Chart 1: Product Categories
+    var data1 = google.visualization.arrayToDataTable([
+      ['Category', 'Count'],
+      <?php
+      $conn = mysqli_connect("localhost", "root", "", "system");
+      $sql1 = "SELECT category_name, COUNT(*) as count FROM product_categories GROUP BY category_name";
+      $result1 = mysqli_query($conn, $sql1);
+      if ($result1 && mysqli_num_rows($result1) > 0) {
+          while ($row = mysqli_fetch_assoc($result1)) {
+              echo "['" . $row['category_name'] . "', " . $row['count'] . "],";
+          }
+      } else {
+          echo "['No Data', 0]";
+      }
+      ?>
+    ]);
+
+    var options1 = {
+      title: 'Product Categories',
+      pieHole: 0.7,
+	  slices: {
+    1: { offset: 0.1 },
+    3: { offset: 0.4 },
+    4: { offset: 0.2 }
+  }
+	  
+    };
+
+    var chart1 = new google.visualization.PieChart(document.getElementById('chart1'));
+    chart1.draw(data1, options1);
+
+    // Chart 2: Order Status
+    var data2 = google.visualization.arrayToDataTable([
+      ['Status', 'Count'],
+      <?php
+      $sql2 = "SELECT order_status, COUNT(*) as count FROM orders GROUP BY order_status";
+      $result2 = mysqli_query($conn, $sql2);
+      if ($result2 && mysqli_num_rows($result2) > 0) {
+          while ($row = mysqli_fetch_assoc($result2)) {
+              echo "['" . $row['order_status'] . "', " . $row['count'] . "],";
+          }
+      } else {
+          echo "['No Data', 0]";
+      }
+      ?>
+    ]);
+
+    var options2 = {
+      title: 'Order Status Distribution',
+      is3D: true
+    };
+
+    var chart2 = new google.visualization.PieChart(document.getElementById('chart2'));
+    chart2.draw(data2, options2);
+  }
+
 
 
 
 </script>
+
   
 
 </body>

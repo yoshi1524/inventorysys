@@ -25,14 +25,19 @@ echo "<tr><th>ID</th><th>Product</th><th>Agent</th><th>Qty</th><th>Type</th><th>
 
 foreach ($transactions as $t) {
     echo "<tr>";
-    echo "<td>{$t['transaction_id']}</td>";
-    echo "<td>{$t['product_id']}</td>";
-    echo "<td>{$t['order_agent']}</td>";
-    echo "<td>{$t['quantity']}</td>";
-    echo "<td>{$t['transaction_type']}</td>";
-    echo "<td>{$t['transaction_date']}</td>";
-    echo "<td>{$t['supplier_name']}</td>";
-    echo "</tr>";
+    echo "<td>{$order['order_id']}</td>";
+    echo "<td>{$order['product_name']}</td>";
+    echo "<td>{$order['quantity_ordered']}</td>";
+    echo "<td>{$order['total_price']}</td>";
+    echo "<td>{$order['order_status']}</td>";
+    echo "<td><button class='viewOrderBtn' 
+                  data-order-id='{$order['order_id']}'
+                  data-product-name='{$order['product_name']}'
+                  data-quantity='{$order['quantity_ordered']}'
+                  data-total='{$order['total_price']}'
+                  data-status='{$order['order_status']}'>
+                  View
+          </button></td>";
 }
 echo "</table>";
 ?>
