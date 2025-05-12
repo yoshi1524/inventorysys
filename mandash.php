@@ -245,13 +245,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</a>
 			</li>
 			<li>
-				<a href="#" id="sidebarStockLink">
+				<a href="#curve_chart" id="sidebarStockLink">
 					<i class='bx bxs-package' ></i>
 					<span class="text">My Stocks</span>
 				</a>
 			</li>
 			<li>
-				<a href="#">
+				<a href="#curve_chart">
 					<i class='bx bxs-doughnut-chart' ></i>
 					<span class="text">Analytics</span>
 				</a>
@@ -434,9 +434,9 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 					<h1>Dashboard</h1>
 						<!--<li><i class='bx bx-chevron-right' ></i></li>-->
 				</div>
-				<a href="#" class="btn-download">
+				<a href="https://www.facebook.com/KLDOfficialFBPage" class="btn-download">
 					<i class='bx bxs-cloud-download' ></i>
-					<span class="text">Download PDF</span>
+					<span class="text">Contact Developers</span>
 				</a>
 			</div>
 

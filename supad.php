@@ -127,6 +127,22 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll(P
     <a href="adduse.php">Manage Users</a>
     <a href="logout.php">Logout</a>
 </div>
+<?php
+            require 'db.php'; 
+            
+            $stmt = $pdo->query("SELECT username, action, timestamp FROM user_logs ORDER BY timestamp DESC");
+            $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $stmt = $pdo->query("SELECT user_id, username, user_level_id, created_at FROM users ORDER BY created_at DESC");
+            $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if (!$logs) {
+    echo "<p>No logs found.</p>";
+}
+if (!$users) {
+    echo "<p>No users found.</p>";
+}
+            ?>
 <div class="content">
     <h1 id="logs">User Activity Logs</h1>
     <table>
@@ -135,7 +151,7 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll(P
             <th>Action</th>
             <th>Date/Time</th>
         </tr>
-        <?php foreach ($logs as $log): ?>
+        <?php foreach ($logs as $log): ?>            
         <tr>
             <td><?= htmlspecialchars($log['username']) ?></td>
             <td><?= htmlspecialchars($log['action']) ?></td>

@@ -193,13 +193,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 
+#notificationsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
 
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
 
+.notification-item:hover {
+    background-color: #f0f0f0;
+}
 
+.activity-log-listt {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.log-list {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
 </style>
 
-
-    </styl>
 </head>
 <body>
 
@@ -224,29 +245,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 				</a>
 			</li>
 			<li>
-				<a href="#" id="sidebarStockLink">
+				<a href="#curve_chart" id="sidebarStockLink">
 					<i class='bx bxs-package' ></i>
 					<span class="text">My Stocks</span>
 				</a>
 			</li>
 			<li>
-				<a href="#">
-					<i class='bx bxs-doughnut-chart' ></i>
-					<span class="text">Analytics</span>
-				</a>
-			</li>
-			<li>
 				<a href="#"id="openReportModalBtn">
 					<i class='bx bxs-message-dots' ></i>
-					<span class="text">Generate Report</span>
+					<span class="text">Generate Reports</span>
 				</a>
 			</li>
 			<!-- Modal Structure for Report Submission -->
 			<div id="reportModal" class="modal">
 				<div class="modal-content">
 					<span class="close" id="closeReportModal">&times;</span>
-					<h2>Submit Report</h2>
-					<form action="submitrepown.php" method="POS T">
+					<h2>What's your concern?</h2>
+					<form action="ownsubmitrep.php" method="POST">
 					<label for="title">Title:</label><br>
 					<input type="text" id="title" name="title" required><br><br>
 
@@ -283,21 +298,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					<div id="ordersContent">
 					<?php include 'fetchord.php'; ?> <!-- Shows current orders -->
 					</div><br>
-
-					<!-- Add Order Button -->
-					<button id="addOrderBtn" style="margin-bottom: 15px; padding: 8px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
-					+ Add Order
-					</button>
-
-					<!-- Mark All Orders as Completed Button -->
-					<form method="POST" action="owncompord.php" onsubmit="return confirm('Are you sure you want to mark all orders as completed?');">
-					<input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
-						<button type="submit" style="color: red;">Mark All Orders as Completed</button>
-					</form>
-					<?php if (isset($_GET['status']) && $_GET['status'] == 'updated'): ?>
-						<p style="color: green;">All orders have been marked as completed.</p>
-					<?php endif; ?>
-			</div>
 		</div>
 
 				<!-- JavaScript to handle Add Order button -->
@@ -320,22 +320,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					modal.style.display = "none";
 				}
 				};
-				//#<script>
-				//document.querySelectorAll(".viewOrderBtn").forEach(button => {
-				///button.addEventListener("click", function () {
-					// Fill modal fields
-				//   document.getElementById("modalOrderId").textContent = this.dataset.orderId;
-				//   document.getElementById("modalProductName").textContent = this.dataset.productName;
-				//   document.getElementById("modalQuantity").textContent = this.dataset.quantity;
-				//   document.getElementById("modalTotal").textContent = this.dataset.total;
-				//  document.getElementById("modalStatus").textContent = this.dataset.status;
-				//
-					// Show the modal
-				// document.getElementById("myModal").style.display = "block";
-				// });
-				//});
 				</script>
-					</button>
+			</button>
 				</div>
 				</div>
 
@@ -356,8 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			<a href="#" class="nav-link">Categories</a>
 			<form action="#">
 				<div class="form-input">
-					<input type="search" placeholder="Search..." id="live-search" autocomplete="off">
-					<button type="submit" class="search-btn"><i class='bx bx-search' ></i></button>
+					<p>iNVAX - Inventory Management System</p>
 				</div>
 				<div id="search-results"></div>
 
@@ -400,6 +385,8 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 				<!-- Notifications will load here -->
 			</ul>
 			</div>
+
+			<!--bgmc logo-->
 			<a href="https://www.facebook.com/profile.php?id=100076371194984" class="profile">
 				<img src="assets/bgmc-modified.png">
 			</a>
@@ -413,9 +400,9 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 					<h1>Dashboard</h1>
 						<!--<li><i class='bx bx-chevron-right' ></i></li>-->
 				</div>
-				<a href="#" class="btn-download">
+				<a href="https://www.facebook.com/KLDOfficialFBPage" class="btn-download">
 					<i class='bx bxs-cloud-download' ></i>
-					<span class="text">Download PDF</span>
+					<span class="text">Contact Developers</span>
 				</a>
 			</div>
 
@@ -444,7 +431,7 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 							<?php
 							include 'db.php';
 
-							$stmt = $pdo->query("SELECT COUNT(*) as total FROM product");
+							$stmt = $pdo->query("SELECT COUNT(*) as total FROM orders");
 							$row = $stmt->fetch();
 							$totalStocks = $row['total'];
 							?>
@@ -513,13 +500,85 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 			</ul>
 <!--graphs-->
             <div class="graphBox">
-    			<div class="box">
-        			<div id="chart1" style="width: 200%; height: 400px;"></div>
-   				</div>
-    			<div class="box">
-        		<div id="chart2" style="width: 100%; height: 400px;"></div>
-    			</div>
-			</div>
+    <div class="box">
+        <div id="chart1" style="width: 200%; height: 400px;"></div>
+    </div>
+    <div class="box">
+        <div id="chart2" style="width: 100%; height: 400px;"></div>
+    </div>
+</div>
+
+			<?php
+			try {
+				$stmt = $pdo->query("SELECT fname, lname, employment_status, user_level_id FROM users ORDER BY created_at DESC");
+				$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			} catch (PDOException $e) {
+				die("Error fetching users: " . $e->getMessage());
+			}
+			?>
+			
+					<!-- Chart Container -->
+    <div id="curve_chart" style="width: 100%; height: 500px; margin-top: 20px;"></div>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+    // Fetch data from the backend
+    fetch('fetchitemdata.php')
+      .then(response => response.json())
+      .then(chartData => {
+        // Convert JSON data to Google Charts format
+        const data = google.visualization.arrayToDataTable(chartData);
+
+        // Chart options
+        const options = {
+          title: 'Stock and Product Acquisition Data', 
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        // Draw the chart
+        const chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        chart.draw(data, options);
+      })
+      .catch(error => console.error('Error fetching chart data:', error));
+  }
+</script>
+			
+            <div id="addItemSidebar" class="activity-sidebar">
+                <div class="sidebar-header">
+                    <h3>Add Items into Inventory</h3>
+                    <button id="closeAddItemSidebar">&times;</button>
+                </div>
+                <form id="multiItemForm" method="POST" action="addprod.php">
+					<div id="itemContainer">
+						<div class="item-entry">
+							<input type="text" name="product_name[]" placeholder="Item name" required>
+							<input type="number" name="unit_price[]" placeholder="Unit price" required>
+							<input type="number" name="quantity[]" placeholder="Quantity" required>
+						<!-- Category Dropdown (inside item-entry div) -->
+							<select name="category_id[]" required>
+								<option value="">Select Category</option>
+								<?php
+								require 'db.php';
+								// Fetch categories from the product_categories table
+								$stmt = $pdo->query("SELECT category_id, category_name FROM product_categories");
+								while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+									echo "<option value=\"" . htmlspecialchars($row['category_id']) . "\">" . htmlspecialchars($row['category_name']) . "</option>";
+								}
+								?>
+							</select>
+							<button type="button" class="removeItemBtn">Remove</button>
+						</div>
+					</div>
+					<button type="button" id="addItemBtn">Add Another Item</button>
+					<br><br>
+					<button type="submit">Submit All Items</button>
+				</form>
+
+            </div>
         </div>
 		</main>
 		<!-- MAIN -->
@@ -814,8 +873,8 @@ fetch('fetchnotif.php')
     fetch('fetchnotif.php')
         .then(response => response.json())
         .then(data => {
-            const notificationsList = document.getElementById('notificationsList');
-            notificationsList.innerHTML = ''; // Clear existing notifications
+            const notifList = document.getElementById('notifList');
+            notifList.innerHTML = ''; // Clear existing notifications
 
             data.notifications.forEach(notification => {
                 const listItem = document.createElement('li');
@@ -830,7 +889,7 @@ fetch('fetchnotif.php')
         })
         .catch(error => console.error('Error fetching notifications:', error));
 });
-document.getElementById('notificationsList').addEventListener('click', (event) => {
+document.getElementById('notifList').addEventListener('click', (event) => {
     if (event.target.classList.contains('notification-item')) {
         const notificationId = event.target.getAttribute('data-id');
 
@@ -848,7 +907,28 @@ document.getElementById('notificationsList').addEventListener('click', (event) =
             .catch(error => console.error('Error fetching report:', error));
     }
 });
+// Add event listener to the notification bell
+document.getElementById('notifiBell').addEventListener('click', () => {
+    // Fetch reports from the backend
+    fetch('fetchnotif.php')
+        .then(response => response.json())
+        .then(reports => {
+            const reportsList = document.getElementById('reportsList');
+            reportsList.innerHTML = ''; // Clear existing reports
 
+            // Populate the reports list
+            reports.forEach(report => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('log-list');
+                listItem.innerHTML = `
+                    <p><strong>${report.title}</strong></p>
+                    <p>Created At: ${report.created_at}</p>
+                `;
+                reportsList.appendChild(listItem);
+            });
+        })
+        .catch(error => console.error('Error fetching reports:', error));
+});
 </script>
 
   
