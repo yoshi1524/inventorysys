@@ -145,6 +145,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="message"><?= htmlspecialchars($message) ?></div>
     <?php endif; ?>
 </form>
+<br>
+<a href="landing.php">Back to Login</a>
+
 </div>
 </body>
 </html>

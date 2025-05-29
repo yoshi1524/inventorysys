@@ -286,12 +286,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			<li>
 				<a href="#team">
 					<i class='bx bxs-group' ></i>
-					<span class="text">Team</span>
+					<span class="text">Accounts</span>
 				</a>
 			</li>
             <li>
 				<a href="manadduse.php">
-					<i class='bx bxs-group' ></i>
+					<i class='bx bxs-group' >+</i>
 					<span class="text">Add User</span>
 				</a>
 			</li>
@@ -327,9 +327,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 					<input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
 						<button type="submit" style="color: red;">Mark All Orders as Completed</button>
 					</form>
-					<?php if (isset($_GET['status']) && $_GET['status'] == 'updated'): ?>
-						<p style="color: green;">All orders have been marked as completed.</p>
-					<?php endif; ?>
 			</div>
 		</div>
 
@@ -441,42 +438,123 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 			</div>
 
 			<ul class="box-info">
-			<li class="collapsible-box">
-				<div class="box-header">
-					<i class='bx bxs-shopping-bag'></i>
-					<span class="text">
-						<?php
-						include 'db.php';
+      <li>
+    <a href="#" id="openCategoriesModal">
+        <i class='bx bxs-shopping-bag'></i>
+    </a>
+    <span>
+        <?php
+            include 'db.php';
 
-						$stmt = $pdo->query("SELECT COUNT(*) as total FROM product_categories");
-						$row = $stmt->fetch();
-						$totalProducts = $row['total'];
-						?>
-						<h3><?= $totalProducts ?></h3>
-						<p>Product Categories</p>
-					</span>
-				</div>
-			</li>
+            $stmt = $pdo->query("SELECT COUNT(*) as total FROM product_categories");
+            $row = $stmt->fetch();
+            $totalProducts = $row['total'];
+            ?>
+        <h3><?= $totalProducts ?></h3>
+        <p>Product Categories</p>
+        </span>
+</li>
 
-                <li class="collapsible-box" id="stockBox">
-                    <div class="box-header">
-					    <i class='bx bxs-package' ></i>
-					    <span class="text">
-							<?php
-							include 'db.php';
+<!-- Modal Structure -->
+<div id="categoriesModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeCategoriesModal">&times;</span>
+        <h2>Product Categories</h2>
+        <p>Here you can view and manage your product categories.</p><br>
+        
+        <!-- Categories Table -->
+        <div id="categoriesContent">
+            <?php include 'fetchprocat.php'; ?> <!-- Shows current categories -->
+        </div><br>
 
-							$stmt = $pdo->query("SELECT COUNT(*) as total FROM orders");
-							$row = $stmt->fetch();
-							$totalStocks = $row['total'];
-							?>
-							<h3><?= $totalStocks ?></h3>
-						<p>Stocks</p>
-					    </span>
-                    </div>
-                    <div class="box-content">
-			            <p>More info about Stocks...</p>
-		            </div>
-				</li>
+        <!-- Add Category Button -->
+        <button id="addCategoryBtn" style="margin-bottom: 15px; padding: 8px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+        </button>
+        <!--edit category button-->
+        <button id="editCategoryBtn" style="margin-bottom: 15px; padding: 8px 16px; background-color: yellow; color: black; border: none; border-radius: 4px; cursor: pointer;">
+            + Manage Categories
+        </button>
+    </div>
+<script>
+  // Open modal when the link is clicked
+document.getElementById("openCategoriesModal").onclick = function () {
+    document.getElementById("categoriesModal").style.display = "block";
+};
+
+// Close the modal when the close button is clicked
+document.getElementById("closeCategoriesModal").onclick = function () {
+    document.getElementById("categoriesModal").style.display = "none";
+};
+
+// Redirect to the Add Category page when the Add Category button is clicked
+document.getElementById("editCategoryBtn").onclick = function () {
+    window.location.href = "addcategory.php"; // This should lead to your category form
+};
+
+// Redirect to the edit Category page when the Add Category button is clicked
+document.getElementById("editCategoryBtn").onclick = function () {
+    window.location.href = "editcat.php"; // This should lead to your category form
+};
+// Optional: Close modal when clicking outside the modal content
+window.onclick = function (event) {
+    const modal = document.getElementById("categoriesModal");
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+};
+</script>
+</div>
+
+<li>
+    <a href="#" id="openStocksModal">
+        <i class='bx bxs-package'></i>
+        </a>
+        <span class="text">
+            <?php
+            include 'db.php';
+
+            $stmt = $pdo->query("SELECT COUNT(*) as total FROM inventory");
+            $row = $stmt->fetch();
+            $totalStocks = $row['total'];
+            ?>
+            <h3><?= $totalStocks ?></h3>
+            <p>Stocks</p>
+        </span>
+</li>
+
+<!-- Modal Structure -->
+<div id="stocksModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeStocksModal">&times;</span>
+        <h2>Stocks</h2>
+        <p>Here you can view your stocks.</p><br>
+        
+        <!-- Stocks Table -->
+        <div id="stocksContent">
+            <?php include 'fetchstocks.php'; ?> <!-- Shows current stocks -->
+        </div><br>
+    </div>
+    <script>
+      // Open modal when the link is clicked
+document.getElementById("openStocksModal").onclick = function () {
+    document.getElementById("stocksModal").style.display = "block";
+};
+
+// Close the modal when the close button is clicked
+document.getElementById("closeStocksModal").onclick = function () {
+    document.getElementById("stocksModal").style.display = "none";
+};
+
+// Optional: Close modal when clicking outside the modal content
+window.onclick = function (event) {
+    const modal = document.getElementById("stocksModal");
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+};
+    </script>
+</div>
+
                 <li class="collapsible-box">
 				<div class="box-header">
 					<i class='bx bxs-group'></i>
@@ -494,16 +572,6 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 				</div>
     <div class="box-content">
         <ul>
-		<?php
-						//$stmt = $pdo->query("SELECT supplier_name FROM product");
-						// ($supplier = $stmt->fetch(PDO::FETCH_ASSOC)) {
-						//	echo "<li>";
-						//	echo "<strong>" . htmlspecialchars($product['product_name']) . "</strong><br>";
-							//echo "Price: ₱" . number_format($product['unit_price'], 2) . "<br>";
-//echo "Quantity: " . intval($product['quantity']);
-						//	echo "</li>";
-//}
-						?>
         </ul>
     </div>
 </li>
@@ -524,7 +592,7 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 									echo "₱" . number_format($total ?? 0, 2);
 									?>
 								</h3>
-								<p>Total Transactions</p>
+								<p>Total Order Transactions</p>
 							</span>
 						</div>
 						<div class="box-content">
@@ -553,7 +621,7 @@ document.querySelector('.search-btn').addEventListener('click', function (e) {
 			<div class="table-data">
 				<div class="employee-list" id="team">
 					<div class="head">
-						<h3>Accounts List</h3>
+						<h3>The Courtyard Team</h3>
 						<i class='bx bx-search' ></i>
 						<i class='bx bx-filter' ></i>
 					</div>
@@ -1065,6 +1133,27 @@ document.getElementById('notifiBell').addEventListener('click', () => {
             });
         })
         .catch(error => console.error('Error fetching reports:', error));
+});
+
+// Open modal when the link is clicked
+document.getElementById('openCategoriesModal').addEventListener('click', function (event) {
+    event.preventDefault(); // Prevent default link behavior
+    const modal = document.getElementById('categoriesModal');
+    modal.style.display = 'block'; // Show the modal
+});
+
+// Close the modal when the close button is clicked
+document.getElementById('closeCategoriesModal').addEventListener('click', function () {
+    const modal = document.getElementById('categoriesModal');
+    modal.style.display = 'none'; // Hide the modal
+});
+
+// Close the modal when clicking outside of it
+window.addEventListener('click', function (event) {
+    const modal = document.getElementById('categoriesModal');
+    if (event.target === modal) {
+        modal.style.display = 'none'; // Hide the modal if clicked outside
+    }
 });
 </script>
 

@@ -124,7 +124,7 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC")->fetchAll(P
         : 'Unknown' ?>
   </strong> (Superadmin)
 </p>    
-    <a href="adduse.php">Manage Users</a>
+    <a href="adduse.php">Add Users</a>
     <a href="logout.php">Logout</a>
 </div>
 <?php

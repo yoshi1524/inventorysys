@@ -122,7 +122,7 @@ $superadminExists = $stmt->fetchColumn() > 0;
     <div class="modal-content">
         <span class="close" onclick="closeModal('privacyModal')">&times;</span>
         <h2>Privacy Policy</h2>
-        <p>Welcome to Invexa! These Terms of Service outline the rules and regulations for using our restaurant inventory management platform. By accessing or using our service, you agree to comply with these terms. If you do not agree, please do not use our service."
+        <p>Welcome to iNVAX! These Terms of Service outline the rules and regulations for using our restaurant inventory management platform. By accessing or using our service, you agree to comply with these terms. If you do not agree, please do not use our service."
 <br>
 <strong> User Accounts & Responsibilities</strong>
 <br>
@@ -152,44 +152,36 @@ Late payments or failed transactions.
 </sub><br>
 data 
 <br>
-<strong>What data Invexa collects and how it is used.</strong>
+<strong>What data iNVAX collects and how it is used.</strong>
 How user data is protected.
 Reference to the Privacy Policy.
 <br>Example:
 
-<sub>"Invexa collects and processes personal and business data to provide better inventory management. We do not sell user data to third parties. For more details, please see our Privacy Policy."</sub>
+<sub>"iNVAX collects and processes personal and business data to provide better inventory management. We do not sell user data to third parties. For more details, please see our Privacy Policy."</sub>
 <br>
 <strong>Service Availability & Downtime</strong>
 <br>
-Invexa does not guarantee 100% uptime.
+iNVAX does not guarantee 100% uptime.
 Explanation of planned maintenance or system outages.
 <br><sub>Example:
 
-"We strive to keep Invexa available 24/7. However, occasional downtime may occur due to maintenance, technical issues, or factors beyond our control."
+"We strive to keep iNVAX available 24/7. However, occasional downtime may occur due to maintenance, technical issues, or factors beyond our control."
 <br></sub>
 <strong>Intellectual Property</strong>
 <br>
-Clarify that Invexa owns the software, branding, and content.
+Clarify that iNVAX owns the software, branding, and content.
 Users cannot copy, resell, or modify the platform.
 <br><sub>Example:
 
-"All trademarks, service marks, and intellectual property on Invexa are owned by us. You may not copy, distribute, or modify any part of our platform without permission."</sub>
+"All trademarks, service marks, and intellectual property on Invexa are owned by us. You may not copy, distribute, or modify any part of our platform without permission."</sub><br>
 <strong>Limitation of Liability</strong>
 <br>
 Invexa is not responsible for business losses, errors, or financial damages caused by using the service.
 <br><sub>Example:
 
-"Invexa is provided 'as is' without any warranties. We are not liable for any business losses, data inaccuracies, or service disruptions."
+"iNVAX is provided 'as is' without any warranties. We are not liable for any business losses, data inaccuracies, or service disruptions."
 <br></sub>
-**Termination of Accounts**
-<br>
-Conditions under which Invexa can suspend or terminate accounts.
-Violations of the terms that lead to account removal.
-<br>Example:
-
-"We reserve the right to suspend or terminate accounts that violate these Terms of Service, including fraudulent activity or misuse."
-<br>
-** Changes to Terms**
+<strong>Changes to Terms</strong> 
 <br>
 Invexa can update the Terms of Service.
 Users will be notified of significant changes.
@@ -204,57 +196,57 @@ Users will be notified of significant changes.
     <div class="modal-content">
         <span class="close" onclick="closeModal('termsModal')">&times;</span>
         <h2>Terms of Service</h2>
-        <p>"Welcome to Invexa! These Terms of Service govern your use of our restaurant inventory management platform. By accessing our website, you agree to abide by these terms."
+        <p>"Welcome to iNVAX! These Terms of Service govern your use of our restaurant inventory management platform. By accessing our website, you agree to abide by these terms."
 <br>
-            🔹 2. User Responsibilities
+            <strong>User Responsibilities</strong> 
             Explain what users can and cannot do on your platform.
             Prohibit illegal activities, hacking, misuse of the system, etc.
             <br>Example:
             "Users must not attempt to gain unauthorized access, misuse the platform, or violate any laws while using Invexa's services."
             <br>
-            🔹 3. Account Registration & Security
+            <strong>Account Registration & Security</strong>
             If users need to register, explain the process.
             State that users must provide accurate information.
             Warn against sharing login credentials.
            <br> Example:
             "Users are responsible for maintaining the confidentiality of their accounts. Any unauthorized use should be reported immediately."
             <br>
-            🔹 4. Payments & Subscription (If Applicable)
+            <strong>Payments & Subscription (If Applicable)</strong>
             If you offer paid plans, mention pricing, billing, refunds, and cancellations.
             State whether fees are refundable or not.
             <br>Example:
             "Subscription fees are billed monthly. Refunds are not provided unless stated otherwise."
             <br>
-            🔹 5. Intellectual Property Rights
+            <strong>Intellectual Property Rights</strong>
             State that all content, logos, and software belong to Invexa.
             Prohibit users from copying, distributing, or modifying the website’s content.
            <br> Example:
             "All trademarks, logos, and content on this website are the exclusive property of Invexa. Unauthorized use is strictly prohibited."
             <br>
-            🔹 6. Termination of Accounts
+            <strong>Termination of Accounts</strong>
             Describe when and why you can ban or suspend users.
             Mention violations such as fraud, abuse, or breaking your terms.
            <br> Example:
             "Invexa reserves the right to terminate or suspend any account that violates our Terms of Service without prior notice."
             <br>
-            🔹 7. Limitation of Liability
+            <strong> Limitation of Liability</strong>
             Protect your business from lawsuits if something goes wrong.
             State that you’re not responsible for service interruptions, data loss, etc.
            <br> Example:
-            "Invexa is not liable for any damages, data loss, or disruptions resulting from the use of our services."
+            "iNVAX is not liable for any damages, data loss, or disruptions resulting from the use of our services."
             <br>
-            🔹 8. Privacy Policy
+            <strong>Privacy Policy</strong>
             Mention that users must also agree to your Privacy Policy.
             Link to your Privacy Policy for handling user data.
            <br> Example:
             "By using our platform, you also agree to our Privacy Policy, which explains how we collect and use your data."
             <br>
-            🔹 9. Governing Law
+            <strong> Governing Law</strong>
             Mention which country’s laws apply in case of legal issues.
            <br> Example:
             "These Terms of Service are governed by the laws of [Your Country/State]. Any disputes must be resolved in the courts of [Your Location]."
             <br>
-            🔹 10. Changes to These Terms
+            <strong>Changes to These Terms</strong>
             State that you can update the Terms and users should check for changes.
            <br> Example:
             "Invexa may update these Terms at any time. Continued use of our services after changes means acceptance of the new terms."</p>
